@@ -29,7 +29,7 @@ class Stock:
             price = float(info["4. close"])
             prices[date] = price
 
-        return prices
+        return prices.__reversed__()
 
     def plot(self):
         plt.plot(self.prices.keys(), self.prices.values(), label=self.ticker)
