@@ -110,6 +110,11 @@ class Stock:
 
         return ema
 
+    def lump_sum(self, start_date, end_date):
+        """Returns percentage gain from lump sum investment starting at start_date and ending on end_date"""
+        pass
+
+
     def plot(self):
         plt.plot(self.prices.keys(), self.prices.values(), label=self.ticker)
 
