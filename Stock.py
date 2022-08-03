@@ -1,20 +1,25 @@
+from genericpath import isdir
 from sortedcontainers import SortedDict
 from datetime import datetime
 import json
 import matplotlib.pyplot as plt
-import os.path
+import os
 import requests
 
 API_KEY = "25R4JNO0E4GWP3RI"
 ENDPOINT = "https://www.alphavantage.co/query"
 DAILY_DATA_FUNC = "TIME_SERIES_DAILY"
 OUTPUT_SIZE = "full"
+JSON_DIR = "json"
 
 class Stock:
     def __init__(self, ticker, update=False):
         self.ticker = ticker
-        self.file = ticker + ".json"
+        self.file = JSON_DIR + "/" + ticker + ".json"
         self.indicators = {}
+
+        if not os.path.isdir(JSON_DIR):
+            os.mkdir(JSON_DIR)
 
         if update or not os.path.exists(ticker + ".json"):
             self.update()
