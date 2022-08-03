@@ -111,10 +111,13 @@ class Stock:
         return ema
 
     def dollar_cost_average(self, amount, period, start_date, end_date):
-        """Calculates return rate for DCA"""
+        """Calculates DCA"""
         num_of_times_invested = "not sure how to do this"
         final_price = self.prices[end_date]
-        return (amount * num_of_times_invested) * ((final_price / self.__get_harmonic_mean(period, start_date, end_date)) - 1)
+        harmonic_mean = self.__get_harmonic_mean(period, start_date, end_date)
+        return_rate = (final_price / harmonic_mean) - 1
+
+        return amount * num_of_times_invested * return_rate
 
     def __get_harmonic_mean(self, period, start_date, end_date):
         """Calculate harmonic mean"""
