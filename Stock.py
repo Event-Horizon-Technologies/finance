@@ -39,6 +39,7 @@ class Stock:
         with open(self.file) as f:
             response = f.read()
             self.__get_attrs_from_json(response)
+
     def update(self):
         params = {"function": DAILY_DATA_FUNC, "symbol": self.ticker, "outputsize": OUTPUT_SIZE, "apikey": API_KEY}
         response = requests.get(ENDPOINT, params).text
@@ -47,8 +48,7 @@ class Stock:
         with open(self.file, "w") as f:
             f.write(response)
 
-
-    # TODO: optimize with numpy?
+     # TODO: optimize with numpy?
     def get_SMA_prices(self, period=200):
         sma = SortedDict()
 
