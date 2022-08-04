@@ -14,8 +14,6 @@ JSON_DIR = "json"
 
 class Stock:
     def __init__(self, ticker, update=False):
-        """Constructor for Stock class"""
-
         self.ticker = ticker
         self.file = JSON_DIR + "/" + ticker + ".json"
         self.indicators = {}
@@ -25,10 +23,10 @@ class Stock:
 
         if update or not os.path.exists(self.file):
             self.update()
-        self.read()
+        else:
+            self.read()
 
     def __get_prices(self):
-        """Gets the prices from data"""
         prices = SortedDict()
 
         for date, info in self.historical.items():
@@ -39,31 +37,24 @@ class Stock:
         return prices
 
     def __get_attrs_from_json(self, response):
-        """Reads data from json and updates data in this Stock object"""
-
         self.historical = json.loads(response)["Time Series (Daily)"]
         self.prices = self.__get_prices()
 
     def read(self):
-        """Reads data from local database (currently json) and updates this Stock object"""
-        
         with open(self.file) as f:
             response = f.read()
             self.__get_attrs_from_json(response)
 
     def update(self):
-        """Pulls data from source and updates the local database (currently json)"""
-
         params = {"function": DAILY_DATA_FUNC, "symbol": self.ticker, "outputsize": OUTPUT_SIZE, "apikey": API_KEY}
         response = requests.get(ENDPOINT, params).text
+        self.__get_attrs_from_json(response)
 
         with open(self.file, "w") as f:
             f.write(response)
 
      # TODO: optimize with numpy?
     def get_SMA_prices(self, period=200):
-        """Computes and returns data for a simple moving average for a specific period"""
-
         sma = SortedDict()
 
         dates = list(self.prices.keys())
@@ -92,8 +83,6 @@ class Stock:
         
     #TODO: code and optimize
     def get_EMA_prices(self, period=200):
-        """Computes and returns data for an exponential moving average with a specific period"""
-
         k = 2.0 / (period + 1)
 
         ema = SortedDict()
@@ -118,7 +107,6 @@ class Stock:
         return ema
 
     def plot(self):
-        """Handles plotting data from Stock class"""
         plt.plot(self.prices.keys(), self.prices.values(), label=self.ticker)
 
         for label, data in self.indicators.items():
