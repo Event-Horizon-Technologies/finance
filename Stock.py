@@ -1,4 +1,3 @@
-from genericpath import isdir
 from sortedcontainers import SortedDict
 from datetime import datetime
 import json
@@ -22,9 +21,15 @@ class Stock:
             os.mkdir(JSON_DIR)
 
         if update or not os.path.exists(self.file):
-            self.update()
+            json_ = self.get_json_from_api()
+            self.write_json_to_file(json_)
         else:
-            self.read()
+            json_ = self.read_json_from_files()
+
+        self.__get_attrs_from_json(json_)
+
+
+
 
     def __get_prices(self):
         prices = SortedDict()
@@ -36,22 +41,21 @@ class Stock:
 
         return prices
 
-    def __get_attrs_from_json(self, response):
-        self.historical = json.loads(response)["Time Series (Daily)"]
+    def __get_attrs_from_json(self, json_):
+        self.historical = json.loads(json_)["Time Series (Daily)"]
         self.prices = self.__get_prices()
 
-    def read(self):
+    def read_json_from_files(self):
         with open(self.file) as f:
-            response = f.read()
-            self.__get_attrs_from_json(response)
+            return f.read()
 
-    def update(self):
-        params = {"function": DAILY_DATA_FUNC, "symbol": self.ticker, "outputsize": OUTPUT_SIZE, "apikey": API_KEY}
-        response = requests.get(ENDPOINT, params).text
-        self.__get_attrs_from_json(response)
-
+    def write_json_to_file(self, json_):
         with open(self.file, "w") as f:
-            f.write(response)
+            f.write(json_)
+
+    def get_json_from_api(self):
+        params = {"function": DAILY_DATA_FUNC, "symbol": self.ticker, "outputsize": OUTPUT_SIZE, "apikey": API_KEY}
+        return requests.get(ENDPOINT, params).text
 
      # TODO: optimize with numpy?
     def get_SMA_prices(self, period=200):
