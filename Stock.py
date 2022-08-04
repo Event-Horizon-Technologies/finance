@@ -110,6 +110,7 @@ class Stock:
 
         return ema
 
+
     def dollar_cost_average(self, amount, period, start_date, end_date):
         """Calculates DCA"""
         num_of_times_invested = "not sure how to do this"
@@ -121,6 +122,13 @@ class Stock:
 
     def __get_harmonic_mean(self, period, start_date, end_date):
         """Calculate harmonic mean"""
+
+    def lump_sum(self, amount, start_date, end_date):
+        """Calculates lump_sum investment results"""
+        return_rate = self.prices[end_date] / self.prices[start_date]
+        return amount * return_rate
+
+
 
     def plot(self):
         plt.plot(self.prices.keys(), self.prices.values(), label=self.ticker)
