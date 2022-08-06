@@ -60,7 +60,7 @@ class Stock:
 
      # TODO: optimize with numpy?
     def get_SMA_prices(self, period=200):
-        """Returns value of Simple moving average for a specific period"""
+        """Returns values of Simple Moving Average for a specific period"""
         sma = SortedDict()
 
         dates = list(self.prices.keys())
@@ -114,7 +114,7 @@ class Stock:
         return ema
 
     def dollar_cost_average(self, period):
-        """Calculates (total * return) of DCA"""
+        """Calculates total times return of DCA"""
         i = harmonic_sum = n = 0
 
         for price in self.prices.values():
@@ -128,7 +128,7 @@ class Stock:
         return final_price / harmonic_mean
 
     def lump_sum(self):
-        """Calculates (total * return) of a lump_sum investment"""
+        """Calculates total times return of a lump_sum investment"""
         beginning_price = list(self.prices.values())[0]
         final_price = list(self.prices.values())[-1]
         return final_price / beginning_price
