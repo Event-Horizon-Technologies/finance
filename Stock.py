@@ -4,6 +4,7 @@ import json
 import matplotlib.pyplot as plt
 import os
 import requests
+import yfinance as yf
 
 API_KEY = "25R4JNO0E4GWP3RI"
 ENDPOINT = "https://www.alphavantage.co/query"
@@ -12,32 +13,27 @@ OUTPUT_SIZE = "full"
 JSON_DIR = "json"
 
 class Stock:
-    def __init__(self, ticker, update=False):
+    def __init__(self, ticker, timeframe="1d"):
         """
-        ticker: str  - symbol (for example, 'SPY') 
-        update: bool - update database before reading into program object
+        ticker: str - symbol (for example, 'SPY')
+        timeframe: str - symbol for length of time of each datapoint
         """
         self.ticker = ticker
-        self.file = JSON_DIR + "/" + ticker + ".json"
+        self.file = f"{JSON_DIR}/{ticker}-{timeframe}.json"
         self.indicators = {}
 
         if not os.path.isdir(JSON_DIR):
             os.mkdir(JSON_DIR)
 
-        if update or not os.path.exists(self.file):
-            json_ = self.get_json_from_api()
-            self.write_json_to_file(json_)
-        else:
-            json_ = self.read_json_from_files()
-
-        self.__get_attrs_from_json(json_)
+        self.historical = yf.Ticker(ticker).history(timeframe=timeframe, period='max')
+        self.prices = self.__get_prices()
 
     def __get_prices(self):
         prices = SortedDict()
 
-        for date, info in self.historical.items():
-            date = datetime.strptime(date, "%Y-%m-%d")
-            price = float(info["4. close"])
+        for timestamp, price in self.historical["Close"].items():
+            date = timestamp.to_pydatetime()
+            price = float(price)
             prices[date] = price
 
         return prices
