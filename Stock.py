@@ -13,7 +13,10 @@ JSON_DIR = "json"
 
 class Stock:
     def __init__(self, ticker, update=False):
-        """ticker = Symbol ('SPY'), choose if you would like to update database before reading into program"""
+        """
+        ticker: str  - symbol (for example, 'SPY') 
+        update: bool - update database before reading into program object
+        """
         self.ticker = ticker
         self.file = JSON_DIR + "/" + ticker + ".json"
         self.indicators = {}
