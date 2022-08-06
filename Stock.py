@@ -32,9 +32,6 @@ class Stock:
 
         self.__get_attrs_from_json(json_)
 
-
-
-
     def __get_prices(self):
         prices = SortedDict()
 
