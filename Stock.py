@@ -13,6 +13,10 @@ JSON_DIR = "json"
 
 class Stock:
     def __init__(self, ticker, update=False):
+        """
+        ticker: str  - symbol (for example, 'SPY') 
+        update: bool - update database before reading into program object
+        """
         self.ticker = ticker
         self.file = JSON_DIR + "/" + ticker + ".json"
         self.indicators = {}
@@ -27,9 +31,6 @@ class Stock:
             json_ = self.read_json_from_files()
 
         self.__get_attrs_from_json(json_)
-
-
-
 
     def __get_prices(self):
         prices = SortedDict()
@@ -59,6 +60,7 @@ class Stock:
 
      # TODO: optimize with numpy?
     def get_SMA_prices(self, period=200):
+        """Returns values of Simple Moving Average for a specific period"""
         sma = SortedDict()
 
         dates = list(self.prices.keys())
@@ -87,6 +89,7 @@ class Stock:
         
     #TODO: code and optimize
     def get_EMA_prices(self, period=200):
+        """Returns values of Exponential Moving Average for a specific period"""
         k = 2.0 / (period + 1)
 
         ema = SortedDict()
