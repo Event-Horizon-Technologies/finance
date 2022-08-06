@@ -13,6 +13,7 @@ JSON_DIR = "json"
 
 class Stock:
     def __init__(self, ticker, update=False):
+        """ticker = Symbol ('SPY'), choose if you would like to update database before reading into program"""
         self.ticker = ticker
         self.file = JSON_DIR + "/" + ticker + ".json"
         self.indicators = {}
@@ -59,6 +60,7 @@ class Stock:
 
      # TODO: optimize with numpy?
     def get_SMA_prices(self, period=200):
+        """Returns value of Simple moving average for a specific period"""
         sma = SortedDict()
 
         dates = list(self.prices.keys())
@@ -87,6 +89,7 @@ class Stock:
         
     #TODO: code and optimize
     def get_EMA_prices(self, period=200):
+        """Returns values of Exponential Moving Average for a specific period"""
         k = 2.0 / (period + 1)
 
         ema = SortedDict()
@@ -111,7 +114,7 @@ class Stock:
         return ema
 
     def dollar_cost_average(self, period):
-        """Calculates total times return of DCA"""
+        """Calculates (total * return) of DCA"""
         i = harmonic_sum = n = 0
 
         for price in self.prices.values():
@@ -125,7 +128,7 @@ class Stock:
         return final_price / harmonic_mean
 
     def lump_sum(self):
-        """Calculates total times return of a lump_sum investment"""
+        """Calculates (total * return) of a lump_sum investment"""
         beginning_price = list(self.prices.values())[0]
         final_price = list(self.prices.values())[-1]
         return final_price / beginning_price
