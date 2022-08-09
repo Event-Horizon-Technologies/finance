@@ -1,10 +1,9 @@
-from operator import le
 from sortedcontainers import SortedDict
 import matplotlib.pyplot as plt
 import yfinance as yf
 
 class Stock:
-    def __init__(self, ticker, timeframe="1d", length = "max"):
+    def __init__(self, ticker, timeframe="1d", length="max"):
         """
         ticker: str - symbol (for example, 'SPY')
         timeframe: str - symbol for length of time of each datapoint
