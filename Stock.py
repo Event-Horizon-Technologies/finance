@@ -1,31 +1,18 @@
+from operator import le
 from sortedcontainers import SortedDict
-from datetime import datetime
-import json
 import matplotlib.pyplot as plt
-import os
-import requests
 import yfinance as yf
 
-API_KEY = "25R4JNO0E4GWP3RI"
-ENDPOINT = "https://www.alphavantage.co/query"
-DAILY_DATA_FUNC = "TIME_SERIES_DAILY"
-OUTPUT_SIZE = "full"
-JSON_DIR = "json"
-
 class Stock:
-    def __init__(self, ticker, timeframe="1d"):
+    def __init__(self, ticker, timeframe="1d", length = "max"):
         """
         ticker: str - symbol (for example, 'SPY')
         timeframe: str - symbol for length of time of each datapoint
         """
         self.ticker = ticker
-        self.file = f"{JSON_DIR}/{ticker}-{timeframe}.json"
         self.indicators = {}
 
-        if not os.path.isdir(JSON_DIR):
-            os.mkdir(JSON_DIR)
-
-        self.historical = yf.Ticker(ticker).history(timeframe=timeframe, period='max')
+        self.historical = yf.Ticker(ticker).history(interval=timeframe, period=length)
         self.prices = self.__get_prices()
 
     def __get_prices(self):
@@ -37,22 +24,6 @@ class Stock:
             prices[date] = price
 
         return prices
-
-    def __get_attrs_from_json(self, json_):
-        self.historical = json.loads(json_)["Time Series (Daily)"]
-        self.prices = self.__get_prices()
-
-    def read_json_from_files(self):
-        with open(self.file) as f:
-            return f.read()
-
-    def write_json_to_file(self, json_):
-        with open(self.file, "w") as f:
-            f.write(json_)
-
-    def get_json_from_api(self):
-        params = {"function": DAILY_DATA_FUNC, "symbol": self.ticker, "outputsize": OUTPUT_SIZE, "apikey": API_KEY}
-        return requests.get(ENDPOINT, params).text
 
      # TODO: optimize with numpy?
     def get_SMA_prices(self, period=200):
