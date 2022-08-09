@@ -13,7 +13,7 @@ class Stock:
 
         self.historical = yf.Ticker(ticker).history(interval=timeframe, period=length)
         self.__get_prices()
-        self.prices = self.close_prices
+        self.prices = self.close_prices # use closing price for everything right now
 
     def __get_prices(self):
         self.open_prices = SortedDict()
