@@ -12,16 +12,17 @@ class Stock:
         self.indicators = {}
 
         self.historical = yf.Ticker(ticker).history(interval=timeframe, period=length)
-        self.prices = self.__get_prices()
+        self.prices = self.__get_prices() 
 
-    def __get_prices(self):
+    def __get_prices(self, price_type="Close"):
+
         prices = SortedDict()
 
-        for timestamp, price in self.historical["Close"].items():
+        for timestamp, price in self.historical[price_type].items():
             date = timestamp.to_pydatetime()
             price = float(price)
             prices[date] = price
-
+        
         return prices
 
      # TODO: optimize with numpy?
