@@ -12,9 +12,9 @@ class Stock:
         self.indicators = {}
 
         self.historical = yf.Ticker(ticker).history(interval=timeframe, period=length)
-        self.prices = self.__get_prices("Close") # use closing price for everything right now
+        self.prices = self.__get_prices() 
 
-    def __get_prices(self, price_type):
+    def __get_prices(self, price_type="Close"):
 
         prices = SortedDict()
 
