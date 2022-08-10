@@ -10,24 +10,20 @@ class Stock:
         """
         self.ticker = ticker
         self.indicators = {}
-        self.all_prices = {}
 
         self.historical = yf.Ticker(ticker).history(interval=timeframe, period=length)
-        self.__get_prices()
-        self.prices = self.all_prices["Close"] # use closing price for everything right now
+        self.prices = self.__get_prices("Close") # use closing price for everything right now
 
-    def __get_prices(self):
+    def __get_prices(self, price_type):
 
-        for price_type in ["Open", "Close", "High", "Low"]:
+        prices = SortedDict()
 
-            prices = SortedDict()
-
-            for timestamp, price in self.historical[price_type].items():
-                date = timestamp.to_pydatetime()
-                price = float(price)
-                prices[date] = price
-
-            self.all_prices[price_type] = prices
+        for timestamp, price in self.historical[price_type].items():
+            date = timestamp.to_pydatetime()
+            price = float(price)
+            prices[date] = price
+        
+        return prices
 
      # TODO: optimize with numpy?
     def get_SMA_prices(self, period=200):
