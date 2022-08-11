@@ -3,10 +3,7 @@ import numpy as np
 
 class HistoricalData:
     def __init__(self, dictionary, interval=None):
-        if interval:
-            self.interval = interval
-        else:
-            self.interval = self.__find_time_delta(dictionary)
+        self.interval = interval if interval else self.__find_time_delta(dictionary)
 
         self.__create_array(dictionary, self.interval)
 
