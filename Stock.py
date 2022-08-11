@@ -1,4 +1,5 @@
 from sortedcontainers import SortedDict
+from HistoricalData import HistoricalData
 import matplotlib.pyplot as plt
 import yfinance as yf
 
@@ -12,18 +13,14 @@ class Stock:
         self.indicators = {}
 
         self.historical = yf.Ticker(ticker).history(interval=timeframe, period=length)
-        self.prices = self.__get_prices() 
+        self.prices = self.__get_prices()
+
+        prices = HistoricalData(self.prices)
+
+        self.prices = prices.to_dict()
 
     def __get_prices(self, price_type="Close"):
-
-        prices = SortedDict()
-
-        for timestamp, price in self.historical[price_type].items():
-            date = timestamp.to_pydatetime()
-            price = float(price)
-            prices[date] = price
-        
-        return prices
+        return {timestamp.to_pydatetime(): float(price) for timestamp, price in self.historical[price_type].items()}
 
      # TODO: optimize with numpy?
     def get_SMA_prices(self, period=200):
