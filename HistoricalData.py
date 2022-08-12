@@ -10,9 +10,10 @@ class HistoricalData:
     def __find_time_delta(self, dictionary):
         time_deltas = {}
 
-        last_date_time = datetime.now(timezone.utc)
+        delta = last_date_time = None
         for date_time, value in dictionary.items():
-            delta = date_time - last_date_time
+            if last_date_time:
+                delta = date_time - last_date_time
             if delta in time_deltas:
                 time_deltas[delta] += 1
             else:
