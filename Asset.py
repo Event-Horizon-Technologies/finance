@@ -3,7 +3,7 @@ from HistoricalData import HistoricalData
 import matplotlib.pyplot as plt
 import yfinance as yf
 
-class Stock:
+class Asset:
     def __init__(self, ticker, timeframe="1d", length="max"):
         """
         ticker: str - symbol (for example, 'SPY')

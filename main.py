@@ -1,6 +1,6 @@
-from Stock import Stock
+from Asset import Asset
 
 # stock = Stock("ETHUSD")
-stock = Stock("SPY", timeframe="1h", length="2y")
+stock = Asset("SPY", timeframe="1h", length="2y")
 stock.plot()
 
