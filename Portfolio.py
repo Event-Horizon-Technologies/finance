@@ -7,8 +7,8 @@ class Portfolio:
         self.length = None
     
     def buy_asset(self, ticker, amount):
-        owned = self.assets.get(ticker)
-        if not owned:
+        asset = self.assets.get(ticker)
+        if asset is None:
             self.assets[ticker] = Asset(ticker, self.timeframe, self.length)
         
         
