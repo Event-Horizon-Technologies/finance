@@ -2,6 +2,7 @@ from sortedcontainers import SortedDict
 from HistoricalData import HistoricalData
 import matplotlib.pyplot as plt
 import yfinance as yf
+import numpy as np
 
 class Stock:
     def __init__(self, ticker, timeframe="1d", length="max"):
@@ -10,47 +11,25 @@ class Stock:
         timeframe: str - symbol for length of time of each datapoint
         """
         self.ticker = ticker
+        self.timeframe = timeframe
+        self.length = length
         self.indicators = {}
+        self.prices = HistoricalData(dictionary=self.__get_prices_dict())
 
-        self.historical = yf.Ticker(ticker).history(interval=timeframe, period=length)
-        self.prices = self.__get_prices()
+    def __get_prices_dict(self, price_type="Close"):
+        historical = yf.Ticker(self.ticker).history(interval=self.timeframe, period=self.length)
+        return {timestamp.to_pydatetime(): float(price) for timestamp, price in historical[price_type].items()}
 
-        prices = HistoricalData(self.prices)
-
-        self.prices = prices.to_dict()
-
-    def __get_prices(self, price_type="Close"):
-        return {timestamp.to_pydatetime(): float(price) for timestamp, price in self.historical[price_type].items()}
-
-     # TODO: optimize with numpy?
     def get_SMA_prices(self, period=200):
         """Returns values of Simple Moving Average for a specific period"""
-        sma = SortedDict()
+        cumsum = self.prices.array.cumsum()
+        self.indicators["SMA"] = HistoricalData(
+            array=np.append(cumsum[period-1], cumsum[period:] - cumsum[:-period]) / period,
+            interval=self.prices.interval,
+            end_date=self.prices.end_date
+        )
+        return self.indicators["SMA"]
 
-        dates = list(self.prices.keys())
-        prices = list(self.prices.values())
-
-        size = len(dates)
-
-        j = 0
-        sum = 0.0
-        for i in range(size):
-            if i < period:
-                sum += prices[i]
-
-                if i == period - 1:
-                    sma[dates[i]] = sum / period
-            else:
-                sum += prices[i] - prices[j]
-
-                sma[dates[i]] = sum / period
-
-                j += 1
-
-        self.indicators["sma"] = sma
-
-        return sma
-        
     #TODO: code and optimize
     def get_EMA_prices(self, period=200):
         """Returns values of Exponential Moving Average for a specific period"""
@@ -97,13 +76,9 @@ class Stock:
         final_price = list(self.prices.values())[-1]
         return final_price / beginning_price
 
-
     def plot(self):
-        plt.plot(self.prices.keys(), self.prices.values(), label=self.ticker)
-
+        self.prices.plot(self.ticker)
         for label, data in self.indicators.items():
-            plt.plot(data.keys(), data.values(), label=label)
-
+            data.plot(label)
         plt.legend(loc='best', prop={'size': 20})
-
         plt.show()
