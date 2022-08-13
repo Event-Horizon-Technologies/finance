@@ -16,7 +16,7 @@ class Asset:
         self.prices = HistoricalData(dictionary=self.__get_prices_dict())
 
     def __get_prices_dict(self, price_type="Close"):
-        historical = yf.symbol(self.symbol).history(interval=self.timeframe, period=self.length)
+        historical = yf.ticker(self.symbol).history(interval=self.timeframe, period=self.length)
         return {timestamp.to_pydatetime(): float(price) for timestamp, price in historical[price_type].items()}
 
     def get_SMA_prices(self, period=200):
