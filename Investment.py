@@ -9,7 +9,7 @@ class Investment:
       self.diversity = None
 
     def update_diversification(self, total_equity):
-        self.diversity = total_equity / self.equity
+        self.diversity = self.equity / total_equity
 
     def get_equity(self):
         return self.equity
