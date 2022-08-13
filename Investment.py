@@ -1,8 +1,8 @@
 from Asset import Asset
 
 class Investment:
-    def __init__(self, ticker, timeframe, length):
-      self.asset = Asset(ticker, timeframe, length)
+    def __init__(self, symbol, timeframe, length):
+      self.asset = Asset(symbol, timeframe, length)
       self.equity = None
       self.shares = None
       self.average_cost = None

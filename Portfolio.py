@@ -8,17 +8,17 @@ class Portfolio:
         self.length = None
         self.total_equity = None
 
-    def buy_asset(self, ticker, amount):
-        if ticker not in self.investments:
-            self.investments[ticker] = Investment(ticker, self.timeframe, self.length)
+    def buy_asset(self, symbol, amount):
+        if symbol not in self.investments:
+            self.investments[symbol] = Investment(symbol, self.timeframe, self.length)
 
-        self.investments[ticker].buy(amount)
+        self.investments[symbol].buy(amount)
 
-    def sell_asset(self, ticker, amount):
-        if ticker in self.investments:
-            self.investments[ticker].sell(amount)
+    def sell_asset(self, symbol, amount):
+        if symbol in self.investments:
+            self.investments[symbol].sell(amount)
         else:
-            warn(f"Attempted to sell {ticker} without owning any, ignored")
+            warn(f"Attempted to sell {symbol} without owning any, ignored")
 
 
     def __update_diversifications(self):

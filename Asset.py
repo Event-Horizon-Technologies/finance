@@ -4,19 +4,19 @@ import yfinance as yf
 import numpy as np
 
 class Asset:
-    def __init__(self, ticker, timeframe="1d", length="max"):
+    def __init__(self, symbol, timeframe="1d", length="max"):
         """
-        ticker: str - symbol (for example, 'SPY')
+        symbol: str - symbol (for example, 'SPY')
         timeframe: str - symbol for length of time of each datapoint
         """
-        self.ticker = ticker
+        self.symbol = symbol
         self.timeframe = timeframe
         self.length = length
         self.indicators = {}
         self.prices = HistoricalData(dictionary=self.__get_prices_dict())
 
     def __get_prices_dict(self, price_type="Close"):
-        historical = yf.Ticker(self.ticker).history(interval=self.timeframe, period=self.length)
+        historical = yf.symbol(self.symbol).history(interval=self.timeframe, period=self.length)
         return {timestamp.to_pydatetime(): float(price) for timestamp, price in historical[price_type].items()}
 
     def get_SMA_prices(self, period=200):
@@ -48,7 +48,7 @@ class Asset:
         return self.prices.array[-1] / self.prices.array[0]
 
     def plot(self):
-        self.prices.plot(self.ticker)
+        self.prices.plot(self.symbol)
         for label, data in self.indicators.items():
             data.plot(label)
         plt.legend(loc='best', prop={'size': 20})
