@@ -26,7 +26,7 @@ class HistoricalData:
 
     def __init_from_array(self):
         n = len(self.array)
-        num_provided = sum([0 if var is None else 1 for var in (self.interval, self.start_date, self.end_date)])
+        num_provided = sum([var is not None for var in (self.interval, self.start_date, self.end_date)])
 
         if num_provided < 2:
             raise Exception("Must provide at least 2 of (interval, start_date, or end_date")
@@ -41,22 +41,16 @@ class HistoricalData:
     def __find_time_delta(self, dictionary):
         time_deltas = {}
 
-        delta = last_date_time = None
-        for date_time, value in dictionary.items():
-            if last_date_time:
-                delta = date_time - last_date_time
-            if delta in time_deltas:
-                time_deltas[delta] += 1
-            else:
-                time_deltas[delta] = 1
+        last_date_time = None
+        for date_time in dictionary.keys():
+            delta = date_time - last_date_time if last_date_time else None
+            time_deltas[delta] = time_deltas[delta] + 1 if delta in time_deltas else 1
             last_date_time = date_time
 
-        max_delta = timedelta(0)
-        max_count = 0
+        max_delta, max_count = timedelta(0), 0
         for delta, count in time_deltas.items():
             if count > max_count:
-                max_count = count
-                max_delta = delta
+                max_delta, max_count = delta, count
 
         return max_delta
 
@@ -71,19 +65,16 @@ class HistoricalData:
         today = self.start_date
         while today <= self.end_date:
             if today in dictionary:
-                values.append(dictionary[today])
+                values += [dictionary[today]]
                 today += self.interval
             else:
                 interpolated_values = self.__get_interpolated_values(today, dictionary)
                 values += interpolated_values
                 today += len(interpolated_values) * self.interval
 
-        self.array = np.array(values, dtype=float)
+        self.array = np.array(values)
 
     def __get_interpolated_values(self, today, dictionary):
-        if today >= self.end_date:
-            return []
-
         first = today - self.interval
         last = today
 
@@ -94,9 +85,9 @@ class HistoricalData:
             last += self.interval
             days_skipped += 1
 
-        total_mult = dictionary[last] / dictionary[first]
-        mult = total_mult ** (1.0 / (days_skipped+1))
+        final_value = dictionary[last]
 
+        mult = (final_value / initial_value) ** (1.0 / (days_skipped+1))
         return [initial_value * mult ** i for i in range(1, days_skipped+1)]
 
     def to_dict(self):
