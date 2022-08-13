@@ -1,4 +1,3 @@
-from sortedcontainers import SortedDict
 from HistoricalData import HistoricalData
 import matplotlib.pyplot as plt
 import yfinance as yf
@@ -30,51 +29,23 @@ class Asset:
         )
         return self.indicators["SMA"]
 
-    #TODO: code and optimize
     def get_EMA_prices(self, period=200):
         """Returns values of Exponential Moving Average for a specific period"""
         k = 2.0 / (period + 1)
-
-        ema = SortedDict()
-
-        dates = list(self.prices.keys())
-        prices = list(self.prices.values())
-
-        size = len(dates)
-
-        sum = 0.0
-        for i in range(size):
-            if i < period:
-                sum += prices[i]
-
-                if i == period - 1:
-                    ema[dates[i]] = sum / period
-            else:
-                ema[dates[i]] = k * prices[i] + (1.0 - k) * ema[dates[i-1]]
-
-        self.indicators["ema"] = ema
-
-        return ema
+        self.indicators["EMA"] = HistoricalData(
+            array=np.frompyfunc(lambda x, y: (1-k)*x + k*y, 2, 1).accumulate(self.prices.array),
+            interval=self.prices.interval,
+            end_date=self.prices.end_date
+        )
+        return self.indicators["EMA"]
 
     def dollar_cost_average(self, period):
         """Calculates total times return of DCA"""
-        i = harmonic_sum = n = 0
-
-        for price in self.prices.values():
-            if i % period == 0:
-                harmonic_sum += 1 / price
-                n += 1
-            i += 1
-
-        harmonic_mean = n / harmonic_sum
-        final_price = list(self.prices.values())[-1]
-        return final_price / harmonic_mean
+        return (self.prices.array[-1] / self.prices.array[::period]).mean()
 
     def lump_sum(self):
         """Calculates total times return of a lump_sum investment"""
-        beginning_price = list(self.prices.values())[0]
-        final_price = list(self.prices.values())[-1]
-        return final_price / beginning_price
+        return self.prices.array[-1] / self.prices.array[0]
 
     def plot(self):
         self.prices.plot(self.ticker)
