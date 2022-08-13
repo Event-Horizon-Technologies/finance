@@ -1,18 +1,15 @@
-from Asset import Asset
+from Investment import Investment
 
 class Portfolio:
     def __init__(self):
-        self.assets = {}
+        self.investments= {}
         self.timeframe = None
         self.length = None
     
     def buy_asset(self, ticker, amount):
-        if ticker not in self.assets:
-            self.assets[ticker] = Asset(ticker, self.timeframe, self.length)
-        
-        
-    def get_asset(self, ticker):
-        return self.assets[ticker]
+        if ticker not in self.investments:
+            self.investments[ticker] = Investment(ticker, self.timeframe, self.length)
+        pass
 
     def set_timeframe(self, timeframe):
         self.timeframe = timeframe
