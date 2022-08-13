@@ -11,3 +11,11 @@ class Investment:
     def update_diversification(self, total_equity):
         self.diversity = total_equity / self.equity
 
+    def get_equity(self):
+        return self.equity
+
+    def buy(self):
+        pass
+
+    def sell(self):
+        pass
