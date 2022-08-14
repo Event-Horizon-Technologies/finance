@@ -39,8 +39,13 @@ class Investment:
         self.shares += amount / self.prices.get_val_by_date(date)
 
     def sell(self, date, amount):
+        if amount > self.equity:
+            return False
+
         self.transactions[date] = -amount
         self.shares -= amount / self.prices.get_val_by_date(date)
+
+        return True
 
     def get_history(self):
         history = np.copy(self.prices)

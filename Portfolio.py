@@ -15,9 +15,9 @@ class Portfolio:
         self.investments[symbol].buy(date, amount)
         self.__update_attributes()
 
-    def sell_asset(self, symbol, amount):
+    def sell_asset(self, symbol, date, amount):
         if symbol in self.investments:
-            if not self.investments[symbol].sell(amount):
+            if not self.investments[symbol].sell(date, amount):
                 warn(f"Attempted to sell more {symbol} than you own, ignored")
 
             if self.investments[symbol].get_equity() <= 0:
