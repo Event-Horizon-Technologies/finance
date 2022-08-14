@@ -15,12 +15,16 @@ class Portfolio:
         self.investments[symbol].buy(date, amount)
         self.__update_attributes()
 
-    def sell_asset(self, symbol, date, amount):
+    def sell_asset(self, symbol, amount):
         if symbol in self.investments:
-            self.investments[symbol].sell(date, amount)
+            if not self.investments[symbol].sell(amount):
+                warn(f"Attempted to sell more {symbol} than you own, ignored")
+
+            if self.investments[symbol].get_equity() <= 0:
+                del self.investments[symbol]
+            
             self.__update_attributes()
         else:
-            # should we ever allow for short selling?
             warn(f"Attempted to sell {symbol} without owning any, ignored")
         
     def __update_attributes(self):
