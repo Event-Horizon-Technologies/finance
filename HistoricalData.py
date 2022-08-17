@@ -32,11 +32,11 @@ class HistoricalData:
             raise Exception("Must provide at least 2 of (interval, start_date, or end_date")
         elif num_provided == 2:
             if self.interval is None:
-                self.interval = (self.end_date - self.start_date) / n
+                self.interval = (self.end_date - self.start_date) / (n - 1) if n > 1 else timedelta(0)
             elif self.start_date is None:
-                self.start_date = self.end_date - n * self.interval
+                self.start_date = self.end_date - (n - 1) * self.interval
             elif self.end_date is None:
-                self.end_date = self.start_date + n * self.interval
+                self.end_date = self.start_date + (n - 1) * self.interval
 
     def __find_time_delta(self, dictionary):
         time_deltas = {}
@@ -91,7 +91,7 @@ class HistoricalData:
         return [initial_value * mult ** i for i in range(1, days_skipped+1)]
     
     def get_val_by_date(self, date):
-        return self.array[(date - self.start_date) / self.interval]
+        return self.array[round((date - self.start_date) / self.interval)]
 
     def to_dict(self):
         return {self.start_date + i * self.interval: self.array[i] for i in range(len(self.array))}
@@ -99,4 +99,3 @@ class HistoricalData:
     def plot(self, label="Label"):
         dictionary = self.to_dict()
         plt.plot(dictionary.keys(), dictionary.values(), label=label)
-
