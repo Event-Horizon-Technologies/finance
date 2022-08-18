@@ -6,12 +6,13 @@ class HistoricalData:
     def __init__(self, **kwargs):
         dictionary = kwargs.get("dictionary")
 
-        self.array = kwargs.get("array")
+        self.values = kwargs.get("values")
         self.interval = kwargs.get("interval")
         self.start_date = kwargs.get("start_date")
         self.end_date = kwargs.get("end_date")
+        self.label = kwargs.get("label")
 
-        if dictionary is None and self.array is None:
+        if dictionary is None and self.values is None:
             raise Exception("Must provide either an array or a dict")
 
         if dictionary:
@@ -25,7 +26,7 @@ class HistoricalData:
         self.__create_array(dictionary)
 
     def __init_from_array(self):
-        n = len(self.array)
+        n = len(self.values)
         num_provided = sum([var is not None for var in (self.interval, self.start_date, self.end_date)])
 
         if num_provided < 2:
@@ -72,7 +73,7 @@ class HistoricalData:
                 values += interpolated_values
                 today += len(interpolated_values) * self.interval
 
-        self.array = np.array(values)
+        self.values = np.array(values)
 
     def __get_interpolated_values(self, today, dictionary):
         first = today - self.interval
@@ -91,11 +92,13 @@ class HistoricalData:
         return [initial_value * mult ** i for i in range(1, days_skipped+1)]
     
     def get_val_by_date(self, date):
-        return self.array[round((date - self.start_date) / self.interval)]
+        if date < self.start_date or date > self.end_date:
+            raise Exception(f"Date {date} is out of bounds")
+        return self.values[round((date - self.start_date) / self.interval)]
 
     def to_dict(self):
-        return {self.start_date + i * self.interval: self.array[i] for i in range(len(self.array))}
+        return {self.start_date + i * self.interval: self.values[i] for i in range(len(self.values))}
 
-    def plot(self, label="Label"):
+    def plot(self):
         dictionary = self.to_dict()
-        plt.plot(dictionary.keys(), dictionary.values(), label=label)
+        plt.plot(dictionary.keys(), dictionary.values(), label=self.label)

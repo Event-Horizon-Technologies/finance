@@ -6,6 +6,7 @@ class Simulator:
     def __init__(self, start_date, end_date, timeframe="1d", cash=1.0):
         self.now = start_date
         self.investments = {}
+        self.indicators = {}
         self.interval = Asset.INTERVALS[timeframe]
         self.start_date = start_date
         self.end_date = end_date
@@ -13,15 +14,18 @@ class Simulator:
         self.cash = cash
         self.initial_cash = cash
 
+    def __create_investment(self, symbol):
+        self.investments[symbol] = Investment(symbol, self.timeframe)
+
     def buy(self, symbol, amount):
         if amount > self.cash:
             warn(f"Attempted to buy {amount} of {symbol} with only {self.cash} cash")
             return False
             
         if symbol not in self.investments:
-            self.investments[symbol] = Investment(symbol, self.timeframe)
+            self.__create_investment(symbol)
 
-        self.investments[symbol].buy(amount)
+        self.investments[symbol].buy(self.now, amount)
         self.cash -= amount
         
         return True
@@ -36,7 +40,7 @@ class Simulator:
             warn(f"Attempted to sell {amount} of {symbol} with only {equity} equity")
             return False
 
-        self.investments[symbol].sell(amount)
+        self.investments[symbol].sell(self.now, amount)
         self.cash += amount
 
         return True
@@ -52,8 +56,15 @@ class Simulator:
                 self.sell(symbol, -amount)
 
     def run(self, strategy):
+        for symbol in strategy.symbols:
+            self.__create_investment(symbol)
+            for indicator in strategy.indicators:
+                historical_data = indicator(self.investments[symbol].asset)
+                self.indicators[symbol] = {}
+                self.indicators[symbol][historical_data.label] = historical_data
+
         while self.now <= self.end_date:
-            self.make_transactions(strategy(self))
+            self.make_transactions(strategy.strategy(self))
             self.now += self.interval
 
         return self.get_equity() / self.initial_cash
