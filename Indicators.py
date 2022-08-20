@@ -15,4 +15,3 @@ def get_ema_prices(asset, period=200):
     k = 2.0 / (period + 1)
     values = np.frompyfunc(lambda x, y: (1-k)*x + k*y, 2, 1).accumulate(asset.prices.values)
     return __create_price_indicator(asset, values, "EMA")
-

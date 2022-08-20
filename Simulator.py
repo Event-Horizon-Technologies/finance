@@ -1,6 +1,7 @@
 from Asset import Asset
 from Investment import Investment
 from warnings import warn
+import matplotlib.pyplot as plt
 
 class Simulator:
     def __init__(self, start_date, end_date, timeframe="1d", cash=1.0):
@@ -58,13 +59,18 @@ class Simulator:
     def run(self, strategy):
         for symbol in strategy.symbols:
             self.__create_investment(symbol)
+            self.indicators[symbol] = {}
             for indicator in strategy.indicators:
                 historical_data = indicator(self.investments[symbol].asset)
-                self.indicators[symbol] = {}
                 self.indicators[symbol][historical_data.label] = historical_data
 
+        strat_hist = {}
         while self.now <= self.end_date:
             self.make_transactions(strategy.strategy(self))
+            strat_hist[self.now] = self.get_equity() + self.cash
             self.now += self.interval
 
-        return self.get_equity() / self.initial_cash
+        self.indicators[strategy.symbols[0]]["EMA"].plot()
+        plt.plot(strat_hist.keys(), strat_hist.values(), label="Strategy")
+
+        return (self.get_equity() + self.cash) / self.initial_cash
