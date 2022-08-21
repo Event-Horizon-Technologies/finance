@@ -56,14 +56,16 @@ class Simulator:
             else:
                 self.sell(symbol, -amount)
 
-    def run(self, strategy):
+    def run(self, strategy, plot_assets=False, plot_indicators=False):
+        # create symbols and indicators
         for symbol in strategy.symbols:
             self.__create_investment(symbol)
             self.indicators[symbol] = {}
             for indicator in strategy.indicators:
-                historical_data = indicator(self.investments[symbol].asset)
+                historical_data = indicator.create_indicator(self.investments[symbol].asset)
                 self.indicators[symbol][historical_data.label] = historical_data
 
+        # run strategy
         strat_hist = {}
         while self.now <= self.end_date:
             self.make_transactions(strategy.strategy(self))
@@ -72,5 +74,7 @@ class Simulator:
 
         self.indicators[strategy.symbols[0]]["EMA"].plot()
         plt.plot(strat_hist.keys(), strat_hist.values(), label="Strategy")
+        plt.legend(loc='best', prop={'size': 20})
+        plt.show()
 
         return (self.get_equity() + self.cash) / self.initial_cash
