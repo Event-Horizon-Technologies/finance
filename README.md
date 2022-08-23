@@ -1,1 +1,1 @@
-# Finance --- NEED TO ADD STUFF TO THIS EVENTUALLY
+:bulb: **Tip:** Remember to appreciate the little things in life.
