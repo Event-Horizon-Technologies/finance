@@ -16,7 +16,7 @@ class Indicator(ABC):
 
 class SMA(Indicator):
     def __init__(self, period=200):
-        super(SMA, self).__init__()
+        super().__init__()
         self.period = period
 
     def create_indicator(self, asset=None):
@@ -27,7 +27,7 @@ class SMA(Indicator):
 
 class EMA(Indicator):
     def __init__(self, period=200):
-        super(EMA, self).__init__()
+        super().__init__()
         self.period = period
 
     def create_indicator(self, asset=None):
