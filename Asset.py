@@ -46,7 +46,5 @@ class Asset:
         """Calculates total times return of a lump_sum investment"""
         return self.prices.values[-1] / self.prices.values[0]
 
-    def plot(self):
-        self.prices.plot()
-        plt.legend(loc='best', prop={'size': 20})
-        plt.show()
+    def plot(self, shares=1, show=True):
+        (self.prices * shares).plot(label=self.symbol, show=show)

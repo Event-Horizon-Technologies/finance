@@ -7,7 +7,7 @@ class Simulator:
     def __init__(self, start_date, end_date, timeframe="1d", cash=1.0):
         self.now = start_date
         self.investments = {}
-        self.indicators = {}
+        self.indicator_data = {}
         self.interval = Asset.INTERVALS[timeframe]
         self.start_date = start_date
         self.end_date = end_date
@@ -56,25 +56,38 @@ class Simulator:
             else:
                 self.sell(symbol, -amount)
 
-    def run(self, strategy, plot_assets=False, plot_indicators=False):
+    def plot(self, plot_assets=False, plot_indicators=False):
+        plt.plot(self.strat_hist.keys(), self.strat_hist.values(), label="Strategy")
+
+        if plot_assets or plot_indicators:
+            for symbol, investment in self.investments.items():
+                asset = investment.asset
+                shares = self.initial_cash / asset.get_price_by_date(self.start_date)
+
+                if plot_assets:
+                    asset.plot(shares=shares, show=False)
+
+                if plot_indicators:
+                    for label, data in self.indicator_data[symbol].items():
+                        (data * shares).plot(show=False, label=f"{symbol} {label}")
+
+        plt.legend(loc='best', prop={'size': 20})
+        plt.show()
+
+    def run(self, strategy):
         # create symbols and indicators
         for symbol in strategy.symbols:
             self.__create_investment(symbol)
-            self.indicators[symbol] = {}
+            self.indicator_data[symbol] = {}
             for indicator in strategy.indicators:
                 historical_data = indicator.create_indicator(self.investments[symbol].asset)
-                self.indicators[symbol][historical_data.label] = historical_data
+                self.indicator_data[symbol][historical_data.label] = historical_data
 
         # run strategy
-        strat_hist = {}
+        self.strat_hist = {}
         while self.now <= self.end_date:
             self.make_transactions(strategy.strategy(self))
-            strat_hist[self.now] = self.get_equity() + self.cash
+            self.strat_hist[self.now] = self.get_equity() + self.cash
             self.now += self.interval
-
-        self.indicators[strategy.symbols[0]]["EMA"].plot()
-        plt.plot(strat_hist.keys(), strat_hist.values(), label="Strategy")
-        plt.legend(loc='best', prop={'size': 20})
-        plt.show()
 
         return (self.get_equity() + self.cash) / self.initial_cash

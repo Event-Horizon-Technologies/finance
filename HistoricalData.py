@@ -20,6 +20,14 @@ class HistoricalData:
         else:
             self.__init_from_array()
 
+    def __mul__(self, num):
+        try:
+            float(num)
+        except TypeError:
+            raise Exception("HistoricalData must be multiplied by a number")
+
+        return HistoricalData(values=self.values*num, start_date=self.start_date, end_date=self.end_date)
+
     def __init_from_dict(self, dictionary):
         if self.interval is None:
             self.interval = self.__find_time_delta(dictionary)
@@ -99,6 +107,11 @@ class HistoricalData:
     def to_dict(self):
         return {self.start_date + i * self.interval: self.values[i] for i in range(len(self.values))}
 
-    def plot(self):
+    def plot(self, label=None, show=True):
+        if label is None: label = self.label
         dictionary = self.to_dict()
-        plt.plot(dictionary.keys(), dictionary.values(), label=self.label)
+        plt.plot(dictionary.keys(), dictionary.values(), label=label)
+        if show:
+            plt.legend(loc='best', prop={'size': 20})
+            plt.show()
+

@@ -6,11 +6,12 @@ from Asset import Asset
 import matplotlib.pyplot as plt
 from pytz import UTC
 
-SYMBOL = "SPY"
+SYMBOL = "BTC-USD"
 TIMEFRAME = "1d"
 
 
 asset = Asset(SYMBOL, timeframe=TIMEFRAME)
+data = asset.prices
 
 start = asset.prices.start_date
 end = asset.prices.end_date - 2 * asset.prices.interval
@@ -21,6 +22,8 @@ end = asset.prices.end_date - 2 * asset.prices.interval
 cash = asset.get_price_by_date(start)
 
 s = Simulator(start_date=start, end_date=end, timeframe=TIMEFRAME, cash=cash)
-mult = s.run(MeanReversion())
+mult = s.run(MeanReversion(SYMBOL))
+s.plot(plot_assets=True, plot_indicators=True)
 
-print(mult)
+# print(mult)
+

@@ -26,7 +26,7 @@ class MeanReversion(Strategy):
 
     def strategy(self, simulator):
         date = simulator.now
-        ema_val = simulator.indicators[self.symbols[0]][self.label].get_val_by_date(date)
+        ema_val = simulator.indicator_data[self.symbols[0]][self.label].get_val_by_date(date)
         price = simulator.investments[self.symbols[0]].asset.get_price_by_date(date)
         equity = simulator.investments[self.symbols[0]].get_equity(date)
 
