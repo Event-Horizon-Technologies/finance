@@ -1,13 +1,14 @@
 from Asset import Asset
 from Investment import Investment
 from warnings import warn
-import matplotlib.pyplot as plt
+from Utils import *
 
 class Simulator:
     def __init__(self, start_date, end_date, timeframe="1d", cash=1.0):
         self.now = start_date
         self.investments = {}
         self.indicator_data = {}
+        self.strat_hist = {}
         self.interval = Asset.INTERVALS[timeframe]
         self.start_date = start_date
         self.end_date = end_date
@@ -71,8 +72,16 @@ class Simulator:
                     for label, data in self.indicator_data[symbol].items():
                         (data * shares).plot(show=False, label=f"{symbol} {label}")
 
-        plt.legend(loc='best', prop={'size': 20})
-        plt.show()
+        show_plot()
+
+    def get_return(self):
+        return (self.get_equity() + self.cash) / self.initial_cash
+
+    def get_alpha(self):
+        if len(self.investments) > 1:
+            raise Exception("Alpha only makes sense with one asset")
+
+        return self.get_return() / list(self.investments.values())[0].asset.lump_sum()
 
     def run(self, strategy):
         # create symbols and indicators
@@ -84,10 +93,7 @@ class Simulator:
                 self.indicator_data[symbol][historical_data.label] = historical_data
 
         # run strategy
-        self.strat_hist = {}
         while self.now <= self.end_date:
             self.make_transactions(strategy.strategy(self))
             self.strat_hist[self.now] = self.get_equity() + self.cash
             self.now += self.interval
-
-        return (self.get_equity() + self.cash) / self.initial_cash

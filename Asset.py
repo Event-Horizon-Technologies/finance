@@ -1,6 +1,5 @@
 from HistoricalData import HistoricalData
 from datetime import timedelta
-import matplotlib.pyplot as plt
 import yfinance as yf
 
 class Asset:
@@ -29,22 +28,30 @@ class Asset:
         self.timeframe = timeframe
         self.length = self.MAX[timeframe] if length is None else length
         self.auto_adjust = auto_adjust
-        self.prices = HistoricalData(dictionary=self.__get_prices_dict())
 
-    def __get_prices_dict(self, price_type="Close"):
-        hist = yf.Ticker(self.symbol).history(interval=self.timeframe, period=self.length, auto_adjust=self.auto_adjust)
-        return {timestamp.to_pydatetime(): float(price) for timestamp, price in hist[price_type].items()}
+        history = self.__get_history()
+
+        self.open = HistoricalData(dictionary=self.__get_prices_dict(history, price_type="Open"))
+        self.close = HistoricalData(dictionary=self.__get_prices_dict(history, price_type="Close"))
+        self.high = HistoricalData(dictionary=self.__get_prices_dict(history, price_type="High"))
+        self.low = HistoricalData(dictionary=self.__get_prices_dict(history, price_type="Low"))
+
+    def __get_history(self):
+        return yf.Ticker(self.symbol).history(interval=self.timeframe, period=self.length, auto_adjust=self.auto_adjust)
+
+    def __get_prices_dict(self, history, price_type="Close"):
+        return {timestamp.to_pydatetime(): float(price) for timestamp, price in history[price_type].items()}
 
     def get_price_by_date(self, date):
-        return self.prices.get_val_by_date(date)
+        return self.close.get_val_by_date(date)
 
     def dollar_cost_average(self, period):
         """Calculates total times return of DCA"""
-        return (self.prices.values[-1] / self.prices.values[::period]).mean()
+        return (self.close.values[-1] / self.close.values[::period]).mean()
 
     def lump_sum(self):
         """Calculates total times return of a lump_sum investment"""
-        return self.prices.values[-1] / self.prices.values[0]
+        return self.close.values[-1] / self.close.values[0]
 
     def plot(self, shares=1, show=True):
-        (self.prices * shares).plot(label=self.symbol, show=show)
+        (self.close * shares).plot(label=self.symbol, show=show)

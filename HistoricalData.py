@@ -1,6 +1,7 @@
 from datetime import timedelta
 import matplotlib.pyplot as plt
 import numpy as np
+from Utils import *
 
 class HistoricalData:
     def __init__(self, **kwargs):
@@ -11,6 +12,7 @@ class HistoricalData:
         self.start_date = kwargs.get("start_date")
         self.end_date = kwargs.get("end_date")
         self.label = kwargs.get("label")
+        self.scatter = kwargs.get("scatter")
 
         if dictionary is None and self.values is None:
             raise Exception("Must provide either an array or a dict")
@@ -97,10 +99,14 @@ class HistoricalData:
         final_value = dictionary[last]
 
         mult = (final_value / initial_value) ** (1.0 / (days_skipped+1))
-        return [initial_value * mult ** i for i in range(1, days_skipped+1)]
-    
+        # return [initial_value * mult ** i for i in range(1, days_skipped+1)]
+        return [initial_value for i in range(1, days_skipped+1)]
+
+    def in_bounds(self, date):
+        return date >= self.start_date and date <= self.end_date
+
     def get_val_by_date(self, date):
-        if date < self.start_date or date > self.end_date:
+        if not self.in_bounds(date):
             raise Exception(f"Date {date} is out of bounds")
         return self.values[round((date - self.start_date) / self.interval)]
 
@@ -110,8 +116,9 @@ class HistoricalData:
     def plot(self, label=None, show=True):
         if label is None: label = self.label
         dictionary = self.to_dict()
-        plt.plot(dictionary.keys(), dictionary.values(), label=label)
+        if self.scatter:
+            plt.scatter(dictionary.keys(), dictionary.values(), label=label, s=2, c="orange")
+        else:
+            plt.plot(dictionary.keys(), dictionary.values(), label=label)
         if show:
-            plt.legend(loc='best', prop={'size': 20})
-            plt.show()
-
+            show_plot()
