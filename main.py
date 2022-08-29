@@ -1,24 +1,20 @@
 #!/usr/bin/python
 
-from datetime import datetime, timedelta
 from Simulator import Simulator
 from Strategy import *
 import Indicators
 from Asset import Asset
-from pytz import UTC
 import sys
+import numpy as np
 
 def main(argv):
-    symbol    = argv[0] if len(argv) > 0 else "NVDA"
-    timeframe = argv[1] if len(argv) > 1 else "5m"
+    symbol    = argv[0] if len(argv) > 0 else "BTC-USD"
+    timeframe = argv[1] if len(argv) > 1 else "1d"
 
     asset = Asset(symbol, timeframe=timeframe)
 
     start = asset.close.start_date
     end = asset.close.end_date - 2 * asset.close.interval
-
-    # start = datetime.strptime("2021-01-01", "%Y-%m-%d").replace(tzinfo=UTC)
-    # end = datetime.strptime("2022-01-01", "%Y-%m-%d").replace(tzinfo=UTC)
 
     cash = asset.get_price_by_date(start)
 

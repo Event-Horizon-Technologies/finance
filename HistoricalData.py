@@ -1,7 +1,6 @@
-from datetime import timedelta
 import numpy as np
+import numba as nb
 from Utils import *
-from numba import njit
 
 class HistoricalData:
     def __init__(self, **kwargs):
@@ -13,7 +12,6 @@ class HistoricalData:
         self.end_date = kwargs.get("end_date")
         self.label = kwargs.get("label")
         self.scatter = kwargs.get("scatter")
-        self.interpolate = kwargs.get("interpolate")
 
         if dictionary is None and self.values is None:
             raise Exception("Must provide either an array or a dict")
@@ -34,7 +32,10 @@ class HistoricalData:
     def __init_from_dict(self, dictionary):
         if self.interval is None:
             self.interval = self.__find_time_delta(dictionary)
-        self.__create_array(dictionary)
+        dates = np.fromiter(sorted(dictionary.keys()), 'datetime64[s]')
+        prices = np.fromiter((dictionary[date] for date in dates), float)
+        self.start_date, self.end_date = dates[0], dates[-1]
+        self.values = self.__create_array(dates, prices, self.interval)
 
     def __init_from_array(self):
         n = len(self.values)
@@ -44,7 +45,7 @@ class HistoricalData:
             raise Exception("Must provide at least 2 of (interval, start_date, or end_date")
         elif num_provided == 2:
             if self.interval is None:
-                self.interval = (self.end_date - self.start_date) / (n - 1) if n > 1 else timedelta(0)
+                self.interval = (self.end_date - self.start_date) / (n - 1) if n > 1 else np.timedelta64(0)
             elif self.start_date is None:
                 self.start_date = self.end_date - (n - 1) * self.interval
             elif self.end_date is None:
@@ -60,48 +61,27 @@ class HistoricalData:
             time_deltas[delta] = time_deltas[delta] + 1 if delta in time_deltas else 1
             last_date_time = date_time
 
-        max_delta, max_count = timedelta(0), 0
+        max_delta, max_count = np.timedelta64(0), 0
         for delta, count in time_deltas.items():
             if count > max_count:
                 max_delta, max_count = delta, count
 
         return max_delta
 
-    def __create_array(self, dictionary):
-        dates = list(dictionary.keys())
-        dates.sort()
+    @staticmethod
+    @nb.njit()
+    def __create_array(dates, prices, interval):
+        values = []; i = 0; last_idx = len(dates) - 1
 
-        self.start_date = dates[0]
-        self.end_date = dates[-1]
+        while i < last_idx:
+            date, price = dates[i], prices[i]
+            while date < dates[i+1]:
+                values.append(price)
+                date += interval
+            i += 1
 
-        values = []
-        today = self.start_date
-        while today <= self.end_date:
-            if today in dictionary:
-                values += [dictionary[today]]
-                today += self.interval
-            else:
-                interpolated_values = self.__get_interpolated_values(today, dictionary)
-                values += interpolated_values
-                today += len(interpolated_values) * self.interval
-
-        self.values = np.array(values)
-
-    def __get_interpolated_values(self, today, dictionary):
-        first = today - self.interval
-        last = today
-
-        initial_value = dictionary[first]
-
-        days_skipped = 0
-        while last not in dictionary:
-            last += self.interval
-            days_skipped += 1
-
-        final_value = dictionary[last]
-
-        mult = (final_value / initial_value) ** (1.0 / (days_skipped+1))
-        return [initial_value * mult ** i if self.interpolate else initial_value for i in range(1, days_skipped+1)]
+        values.append(prices[last_idx])
+        return np.array(values)
 
     def in_bounds(self, date):
         return self.start_date <= date <= self.end_date

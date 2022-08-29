@@ -80,7 +80,6 @@ class Simulator:
     def get_alpha(self):
         if len(self.investments) > 1:
             raise Exception("Alpha only makes sense with one asset")
-
         return self.get_return() / list(self.investments.values())[0].asset.lump_sum()
 
     def run(self, strategy):

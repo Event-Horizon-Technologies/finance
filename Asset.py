@@ -1,14 +1,15 @@
 from HistoricalData import HistoricalData
-from datetime import timedelta
+import numpy as np
 import yfinance as yf
+from Utils import *
 
 class Asset:
     INTERVALS = {
-        "1w": timedelta(weeks=1),
-        "1d": timedelta(days=1),
-        "1h": timedelta(hours=1),
-        "5m": timedelta(minutes=5),
-        "1m": timedelta(minutes=1)
+        "1w": np.timedelta64(1, 'W'),
+        "1d": np.timedelta64(1, 'D'),
+        "1h": np.timedelta64(1, 'h'),
+        "5m": np.timedelta64(5, 'm'),
+        "1m": np.timedelta64(1, 'm')
     }
 
     MAX = {
@@ -30,17 +31,19 @@ class Asset:
         self.auto_adjust = auto_adjust
 
         history = self.__get_history()
+        interval = self.INTERVALS[timeframe]
 
-        self.open = HistoricalData(dictionary=self.__get_prices_dict(history, price_type="Open"))
-        self.close = HistoricalData(dictionary=self.__get_prices_dict(history, price_type="Close"))
-        self.high = HistoricalData(dictionary=self.__get_prices_dict(history, price_type="High"))
-        self.low = HistoricalData(dictionary=self.__get_prices_dict(history, price_type="Low"))
+        self.open = HistoricalData(dictionary=self.__get_prices_dict(history, price_type="Open"), interval=interval)
+        self.close = HistoricalData(dictionary=self.__get_prices_dict(history, price_type="Close"), interval=interval)
+        self.high = HistoricalData(dictionary=self.__get_prices_dict(history, price_type="High"), interval=interval)
+        self.low = HistoricalData(dictionary=self.__get_prices_dict(history, price_type="Low"), interval=interval)
 
     def __get_history(self):
         return yf.Ticker(self.symbol).history(interval=self.timeframe, period=self.length, auto_adjust=self.auto_adjust)
 
-    def __get_prices_dict(self, history, price_type="Close"):
-        return {timestamp.to_pydatetime(): float(price) for timestamp, price in history[price_type].items()}
+    @staticmethod
+    def __get_prices_dict(history, price_type="Close"):
+        return {create_np_datetime(timestamp): float(price) for timestamp, price in history[price_type].items()}
 
     def get_price_by_date(self, date):
         return self.close.get_val_by_date(date)

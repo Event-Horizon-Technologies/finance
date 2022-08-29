@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from HistoricalData import HistoricalData
 import numpy as np
+import numba as nb
 import math
-from numba import njit
 
 class Indicator(ABC):
     def __init__(self, label=None):
@@ -49,7 +49,7 @@ class PSAR(Indicator):
         return self.create_price_indicator(asset, values, scatter=True)
 
     @staticmethod
-    @njit()
+    @nb.njit()
     def psar_jitted(close_arr, high_arr, low_arr, increment, max_alpha):
         uptrend = close_arr[0] < close_arr[1]
         sar = low_arr[0] if uptrend else high_arr[0]
