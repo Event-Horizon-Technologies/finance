@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from HistoricalData import HistoricalData
 import numpy as np
 import math
-
+from numba import njit
 
 class Indicator(ABC):
     def __init__(self, label=None):
@@ -45,17 +45,24 @@ class PSAR(Indicator):
         self.max_alpha = max_alpha
 
     def create_indicator(self, asset=None):
-        uptrend = asset.close.values[0] < asset.close.values[1]
-        sar = asset.low.values[0] if uptrend else asset.high.values[0]
+        values = self.psar_jitted(asset.close.values, asset.high.values, asset.low.values, self.increment, self.max_alpha)
+        return self.create_price_indicator(asset, values, scatter=True)
+
+    @staticmethod
+    @njit()
+    def psar_jitted(close_arr, high_arr, low_arr, increment, max_alpha):
+        uptrend = close_arr[0] < close_arr[1]
+        sar = low_arr[0] if uptrend else high_arr[0]
         ep = -math.inf if uptrend else math.inf
         alpha = 0
         values = []
 
-        for high, low in zip(asset.high.values[1:], asset.low.values[1:]):
+        for i in range(1, len(low_arr)):
+            low, high = low_arr[i], high_arr[i]
             # if we reach a new ep
             if (uptrend and high > ep) or (not uptrend and low < ep):
                 ep = high if uptrend else low
-                alpha = min(self.max_alpha, alpha + self.increment)
+                alpha = min(max_alpha, alpha + increment)
 
             sar = alpha * ep + (1.0 - alpha) * sar
 
@@ -68,4 +75,4 @@ class PSAR(Indicator):
 
             values.append(sar)
 
-        return self.create_price_indicator(asset, np.array(values), scatter=True)
+        return np.array(values)
