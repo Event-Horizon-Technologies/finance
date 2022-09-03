@@ -52,10 +52,10 @@ class PSAR(Indicator):
     @nb.njit()
     def psar_jitted(close_arr, high_arr, low_arr, increment, max_alpha):
         uptrend = close_arr[0] < close_arr[1]
-        sar = low_arr[0] if uptrend else high_arr[0]
+        values = np.empty(len(low_arr))
+        values[0] = sar = low_arr[0] if uptrend else high_arr[0]
         ep = -math.inf if uptrend else math.inf
-        alpha = 0
-        values = []
+        alpha = 0.0
 
         for i in range(1, len(low_arr)):
             low, high = low_arr[i], high_arr[i]
@@ -71,8 +71,8 @@ class PSAR(Indicator):
                 uptrend = not uptrend
                 sar = ep
                 ep = -math.inf if uptrend else math.inf
-                alpha = 0
+                alpha = 0.0
 
-            values.append(sar)
+            values[i] = sar
 
-        return np.array(values)
+        return values
