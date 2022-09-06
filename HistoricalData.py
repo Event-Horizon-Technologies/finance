@@ -34,9 +34,9 @@ class HistoricalData:
             self.interval = self.__find_time_delta(dictionary)
         dates = np.fromiter(sorted(dictionary.keys()), 'datetime64[s]')
         prices = np.fromiter((dictionary[date] for date in dates), float)
-        self.start_date, self.end_date = dates[0], dates[-1]
-        size = round((self.end_date - self.start_date + self.interval) / self.interval)
-        self.values = self.__create_array(dates, prices, self.interval, size)
+        self.start_date = dates[0]
+        self.values = self.__create_array(dates, prices, self.interval)
+        self.end_date = self.start_date + len(self.values) * self.interval
 
     def __init_from_array(self):
         n = len(self.values)
@@ -71,20 +71,18 @@ class HistoricalData:
 
     @staticmethod
     @nb.njit()
-    def __create_array(dates, prices, interval, size):
-        values = np.empty(size)
-        i = j = 0; last_idx = len(dates) - 1
+    def __create_array(dates, prices, interval):
+        i = 0; last_idx = len(prices) - 1; date = dates[0]; values = []
 
         while i < last_idx:
-            date, price = dates[i], prices[i]
+            price = prices[i]
             while date < dates[i+1]:
-                values[j] = price
+                values.append(price)
                 date += interval
-                j += 1
             i += 1
 
-        values[size-1] = prices[last_idx]
-        return values
+        values.append(prices[last_idx])
+        return np.array(values)
 
     def in_bounds(self, date):
         return self.start_date <= date <= self.end_date
