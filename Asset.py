@@ -1,15 +1,15 @@
 from HistoricalData import HistoricalData
-from datetime import timedelta
-import matplotlib.pyplot as plt
+import numpy as np
 import yfinance as yf
+from Utils import *
 
 class Asset:
     INTERVALS = {
-        "1w": timedelta(weeks=1),
-        "1d": timedelta(days=1),
-        "1h": timedelta(hours=1),
-        "5m": timedelta(minutes=5),
-        "1m": timedelta(minutes=1)
+        "1w": np.timedelta64(1, 'W'),
+        "1d": np.timedelta64(1, 'D'),
+        "1h": np.timedelta64(1, 'h'),
+        "5m": np.timedelta64(5, 'm'),
+        "1m": np.timedelta64(1, 'm')
     }
 
     MAX = {
@@ -29,22 +29,32 @@ class Asset:
         self.timeframe = timeframe
         self.length = self.MAX[timeframe] if length is None else length
         self.auto_adjust = auto_adjust
-        self.prices = HistoricalData(dictionary=self.__get_prices_dict())
 
-    def __get_prices_dict(self, price_type="Close"):
-        hist = yf.Ticker(self.symbol).history(interval=self.timeframe, period=self.length, auto_adjust=self.auto_adjust)
-        return {timestamp.to_pydatetime(): float(price) for timestamp, price in hist[price_type].items()}
+        history = self.__get_history()
+        interval = self.INTERVALS[timeframe]
+
+        self.open = HistoricalData(dictionary=self.__get_prices_dict(history, price_type="Open"), interval=interval)
+        self.close = HistoricalData(dictionary=self.__get_prices_dict(history, price_type="Close"), interval=interval)
+        self.high = HistoricalData(dictionary=self.__get_prices_dict(history, price_type="High"), interval=interval)
+        self.low = HistoricalData(dictionary=self.__get_prices_dict(history, price_type="Low"), interval=interval)
+
+    def __get_history(self):
+        return yf.Ticker(self.symbol).history(interval=self.timeframe, period=self.length, auto_adjust=self.auto_adjust)
+
+    @staticmethod
+    def __get_prices_dict(history, price_type="Close"):
+        return {create_np_datetime(timestamp): float(price) for timestamp, price in history[price_type].items()}
 
     def get_price_by_date(self, date):
-        return self.prices.get_val_by_date(date)
+        return self.close.get_val_by_date(date)
 
     def dollar_cost_average(self, period):
         """Calculates total times return of DCA"""
-        return (self.prices.values[-1] / self.prices.values[::period]).mean()
+        return (self.close.values[-1] / self.close.values[::period]).mean()
 
     def lump_sum(self):
         """Calculates total times return of a lump_sum investment"""
-        return self.prices.values[-1] / self.prices.values[0]
+        return self.close.values[-1] / self.close.values[0]
 
     def plot(self, shares=1, show=True):
-        (self.prices * shares).plot(label=self.symbol, show=show)
+        (self.close * shares).plot(label=self.symbol, show=show)
