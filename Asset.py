@@ -5,7 +5,6 @@ from Utils import *
 
 class Asset:
     INTERVALS = {
-        "1w": np.timedelta64(1, 'W'),
         "1d": np.timedelta64(1, 'D'),
         "1h": np.timedelta64(1, 'h'),
         "5m": np.timedelta64(5, 'm'),
@@ -13,7 +12,6 @@ class Asset:
     }
 
     MAX = {
-        "1w": "max",
         "1d": "max",
         "1h": "730d",
         "5m": "60d",
@@ -43,7 +41,8 @@ class Asset:
 
     @staticmethod
     def __get_prices_dict(history, price_type="Close"):
-        return {create_np_datetime(timestamp): float(price) for timestamp, price in history[price_type].items()}
+        # the yfinance API can have bad data in the last row of history for some reason, thus the '[:-1]'
+        return {create_np_datetime(timestamp): float(price) for timestamp, price in history[price_type][:-1].items()}
 
     def get_price_by_date(self, date):
         return self.close.get_val_by_date(date)
