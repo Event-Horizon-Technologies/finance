@@ -72,12 +72,12 @@ class PSAR_EMA(Strategy):
         if not self.simulator.indicator_data[self.symbols[0]]["PSAR"].in_bounds(simulator.now):
             return {}
 
-        if simulator.cash > 0 and self.__get_indicator_value("PSAR") < self.__get_asset_value() and \
-                self.__get_indicator_value(self.short_period_label) > self.__get_indicator_value(self.long_period_label):
+        if (simulator.cash > 0 and self.__get_indicator_value("PSAR") < self.__get_asset_value() and 
+                self.__get_indicator_value(self.short_period_label) > self.__get_indicator_value(self.long_period_label)):
             return {self.symbols[0]: simulator.cash}
 
-        if equity > 0 and self.__get_indicator_value("PSAR") > self.__get_asset_value() and \
-                self.__get_indicator_value(self.short_period_label) < self.__get_indicator_value(self.long_period_label):
+        if (equity > 0 and self.__get_indicator_value("PSAR") > self.__get_asset_value() and 
+                self.__get_indicator_value(self.short_period_label) < self.__get_indicator_value(self.long_period_label)):
             return {self.symbols[0]: -equity}
 
         return {}
