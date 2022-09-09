@@ -1,11 +1,11 @@
 #!/usr/bin/python
-
-from Simulator import Simulator
-from Strategy import *
 import Indicators
+import Strategy
 from Asset import Asset
-import sys
+from Simulator import Simulator
+
 import numpy as np
+import sys
 
 def main(argv):
     symbol    = argv[0] if len(argv) > 0 else "BTC-USD"
@@ -19,11 +19,10 @@ def main(argv):
     cash = asset.get_price_by_date(start)
 
     s = Simulator(start_date=start, end_date=end, timeframe=timeframe, cash=cash)
-    s.run(PSAR_EMA(symbol))
+    s.run(Strategy.PSAR_EMA(symbol))
     s.plot(plot_assets=True)
 
     print(s.get_alpha())
-
 
 if __name__ == "__main__":
     main(sys.argv[1:])

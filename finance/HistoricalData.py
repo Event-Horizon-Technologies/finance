@@ -1,6 +1,10 @@
+import Utils
+
+import matplotlib.pyplot as plt
 import numpy as np
 import numba as nb
-from Utils import *
+from scipy import stats
+
 
 class HistoricalData:
     def __init__(self, **kwargs):
@@ -27,14 +31,15 @@ class HistoricalData:
         except TypeError:
             raise Exception("HistoricalData must be multiplied by a number")
 
-        return HistoricalData(values=self.values*num, start_date=self.start_date, end_date=self.end_date)
+        return HistoricalData(values=self.values * num, start_date=self.start_date, end_date=self.end_date)
 
     def __init_from_dict(self, dictionary):
-        if self.interval is None:
-            self.interval = self.__find_time_delta(dictionary)
         dates = np.fromiter(sorted(dictionary.keys()), 'datetime64[s]')
         prices = np.fromiter((dictionary[date] for date in dates), float)
         self.start_date, self.end_date = dates[0], dates[-1]
+        if self.interval is None:
+            self.interval = self.__find_time_delta(dates)
+
         size = round((self.end_date + self.interval - self.start_date) / self.interval)
         self.values = self.__create_array(dates, prices, self.interval, size)
 
@@ -53,21 +58,8 @@ class HistoricalData:
                 self.end_date = self.start_date + (n - 1) * self.interval
 
     @staticmethod
-    def __find_time_delta(dictionary):
-        time_deltas = {}
-
-        last_date_time = None
-        for date_time in dictionary.keys():
-            delta = date_time - last_date_time if last_date_time else None
-            time_deltas[delta] = time_deltas[delta] + 1 if delta in time_deltas else 1
-            last_date_time = date_time
-
-        max_delta, max_count = np.timedelta64(0), 0
-        for delta, count in time_deltas.items():
-            if count > max_count:
-                max_delta, max_count = delta, count
-
-        return max_delta
+    def __find_time_delta(dates):
+        return stats.mode(dates[1:] - dates[:-1])
 
     @staticmethod
     @nb.njit()
@@ -104,4 +96,4 @@ class HistoricalData:
         else:
             plt.plot(dictionary.keys(), dictionary.values(), label=label)
         if show:
-            show_plot()
+            Utils.show_plot()
