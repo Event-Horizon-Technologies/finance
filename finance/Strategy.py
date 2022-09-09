@@ -9,13 +9,13 @@ class Strategy(ABC):
         self.simulator = None
 
     @abstractmethod
-    def strategy(self, simulator): pass
+    def get_transactions(self, simulator): pass
 
 class BuyAndHold(Strategy):
     def __init__(self, symbol="SPY"):
         super().__init__([symbol], [])
 
-    def strategy(self, simulator):
+    def get_transactions(self, simulator):
         return {self.symbols[0]: simulator.cash} if simulator.now == simulator.start_date else {}
 
 class MeanReversion(Strategy):
@@ -25,7 +25,7 @@ class MeanReversion(Strategy):
         self.sell_thresh = sell_thresh
         self.label = self.indicators[0].label
 
-    def strategy(self, simulator):
+    def get_transactions(self, simulator):
         date = simulator.now
         ema_val = simulator.indicator_data[self.symbols[0]][self.label].get_val_by_date(date)
         price = simulator.investments[self.symbols[0]].asset.get_price_by_date(date)
@@ -67,7 +67,7 @@ class PSAR_EMA(Strategy):
     def __get_asset_value(self):
         return self.simulator.investments[self.symbols[0]].asset.get_price_by_date(self.simulator.now)
 
-    def strategy(self, simulator):
+    def get_transactions(self, simulator):
         self.simulator = simulator
         equity = simulator.investments[self.symbols[0]].get_equity(simulator.now)
 
