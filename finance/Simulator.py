@@ -98,7 +98,7 @@ class Simulator:
 
     def __run(self, strategy):
         while self.now <= self.end_date:
-            self.make_transactions(strategy.strategy(self))
+            self.make_transactions(strategy.get_transactions(self))
             self.strat_hist[self.now] = self.get_equity() + self.cash
             self.now += self.interval
 
