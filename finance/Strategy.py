@@ -1,5 +1,6 @@
-from abc import ABC, abstractmethod
 import Indicators
+
+from abc import ABC, abstractmethod
 
 class Strategy(ABC):
     def __init__(self, symbols=None, indicators=None):
@@ -8,9 +9,7 @@ class Strategy(ABC):
         self.simulator = None
 
     @abstractmethod
-    def strategy(self, simulator):
-        pass
-
+    def strategy(self, simulator): pass
 
 class BuyAndHold(Strategy):
     def __init__(self, symbol="SPY"):
@@ -18,7 +17,6 @@ class BuyAndHold(Strategy):
 
     def strategy(self, simulator):
         return {self.symbols[0]: simulator.cash} if simulator.now == simulator.start_date else {}
-
 
 class MeanReversion(Strategy):
     def __init__(self, symbol="SPY", buy_thresh=0.95, sell_thresh=3):
@@ -41,8 +39,8 @@ class MeanReversion(Strategy):
 
         return {}
 
-
 class PSAR_EMA(Strategy):
+
     def __init__(self, symbol="SPY", short_period=20, long_period=40):
         self.short_period, self.long_period = sorted((short_period, long_period))
         super().__init__([symbol], [
@@ -59,6 +57,10 @@ class PSAR_EMA(Strategy):
     def long_period_label(self):
         return f"EMA-{self.long_period}"
 
+    @property
+    def psar_label(self):
+        return "PSAR"
+
     def __get_indicator_value(self, label):
         return self.simulator.indicator_data[self.symbols[0]][label].get_val_by_date(self.simulator.now)
 
@@ -69,14 +71,11 @@ class PSAR_EMA(Strategy):
         self.simulator = simulator
         equity = simulator.investments[self.symbols[0]].get_equity(simulator.now)
 
-        if not self.simulator.indicator_data[self.symbols[0]]["PSAR"].in_bounds(simulator.now):
-            return {}
-
-        if (simulator.cash > 0 and self.__get_indicator_value("PSAR") < self.__get_asset_value() and 
+        if (simulator.cash > 0 and self.__get_indicator_value(self.psar_label) < self.__get_asset_value() and 
                 self.__get_indicator_value(self.short_period_label) > self.__get_indicator_value(self.long_period_label)):
             return {self.symbols[0]: simulator.cash}
 
-        if (equity > 0 and self.__get_indicator_value("PSAR") > self.__get_asset_value() and 
+        if (equity > 0 and self.__get_indicator_value(self.psar_label) > self.__get_asset_value() and 
                 self.__get_indicator_value(self.short_period_label) < self.__get_indicator_value(self.long_period_label)):
             return {self.symbols[0]: -equity}
 

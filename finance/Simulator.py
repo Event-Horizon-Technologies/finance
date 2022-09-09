@@ -1,7 +1,9 @@
+import Utils
 from Asset import Asset
 from Investment import Investment
+
+import matplotlib.pyplot as plt
 from warnings import warn
-from Utils import *
 
 class Simulator:
     def __init__(self, start_date, end_date, timeframe="1d", cash=1.0):
@@ -72,7 +74,7 @@ class Simulator:
                     for label, data in self.indicator_data[symbol].items():
                         (data * shares).plot(show=False, label=f"{symbol} {label}")
 
-        show_plot()
+        Utils.show_plot()
 
     def get_return(self):
         return (self.get_equity() + self.cash) / self.initial_cash
@@ -83,7 +85,10 @@ class Simulator:
         return self.get_return() / list(self.investments.values())[0].asset.lump_sum()
 
     def run(self, strategy):
-        # create symbols and indicators
+        self.__create_strategy_data(strategy)
+        self.__run(strategy)
+
+    def __create_strategy_data(self, strategy):
         for symbol in strategy.symbols:
             self.__create_investment(symbol)
             self.indicator_data[symbol] = {}
@@ -91,8 +96,10 @@ class Simulator:
                 historical_data = indicator.create_indicator(self.investments[symbol].asset)
                 self.indicator_data[symbol][historical_data.label] = historical_data
 
-        # run strategy
+    def __run(self, strategy):
         while self.now <= self.end_date:
             self.make_transactions(strategy.strategy(self))
             self.strat_hist[self.now] = self.get_equity() + self.cash
             self.now += self.interval
+
+

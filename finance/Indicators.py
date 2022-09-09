@@ -1,8 +1,9 @@
-from abc import ABC, abstractmethod
 from HistoricalData import HistoricalData
-import numpy as np
-import numba as nb
+
 import math
+import numba as nb
+import numpy as np
+from abc import ABC, abstractmethod
 
 class Indicator(ABC):
     def __init__(self, label=None):
@@ -13,8 +14,7 @@ class Indicator(ABC):
                               label=self.label, scatter=scatter)
 
     @abstractmethod
-    def create_indicator(self, asset=None):
-        pass
+    def create_indicator(self, asset=None): pass
 
 class SMA(Indicator):
     def __init__(self, label=None, period=200):
@@ -22,7 +22,6 @@ class SMA(Indicator):
         self.period = period
 
     def create_indicator(self, asset=None):
-        """Returns values of Simple Moving Average for a specific period"""
         cumsum = asset.close.values.cumsum()
         values = np.append(cumsum[self.period - 1], cumsum[self.period:] - cumsum[:-self.period]) / self.period
         return self.create_price_indicator(asset, values)
@@ -33,7 +32,6 @@ class EMA(Indicator):
         self.period = period
 
     def create_indicator(self, asset=None):
-        """Returns values of Exponential Moving Average for a specific period"""
         k = 2.0 / (self.period + 1)
         values = np.frompyfunc(lambda x, y: (1-k)*x + k*y, 2, 1).accumulate(asset.close.values)
         return self.create_price_indicator(asset, values)
@@ -45,12 +43,12 @@ class PSAR(Indicator):
         self.max_alpha = max_alpha
 
     def create_indicator(self, asset=None):
-        values = self.psar_jitted(asset.close.values, asset.high.values, asset.low.values, self.increment, self.max_alpha)
+        values = self.psar(asset.close.values, asset.high.values, asset.low.values, self.increment, self.max_alpha)
         return self.create_price_indicator(asset, values, scatter=True)
 
     @staticmethod
     @nb.njit()
-    def psar_jitted(close_arr, high_arr, low_arr, increment, max_alpha):
+    def psar(close_arr, high_arr, low_arr, increment, max_alpha):
         uptrend = close_arr[0] < close_arr[1]
         values = np.empty(len(low_arr))
         values[0] = sar = low_arr[0] if uptrend else high_arr[0]
@@ -59,6 +57,7 @@ class PSAR(Indicator):
 
         for i in range(1, len(low_arr)):
             low, high = low_arr[i], high_arr[i]
+
             # if we reach a new ep
             if (uptrend and high > ep) or (not uptrend and low < ep):
                 ep = high if uptrend else low

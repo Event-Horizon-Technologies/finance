@@ -1,7 +1,8 @@
+import Utils
 from HistoricalData import HistoricalData
+
 import numpy as np
 import yfinance as yf
-from Utils import *
 
 class Asset:
     INTERVALS = {
@@ -19,10 +20,6 @@ class Asset:
     }
 
     def __init__(self, symbol, timeframe="1d", length=None, auto_adjust=True):
-        """
-        symbol: str - symbol (for example, 'SPY')
-        timeframe: str - symbol for length of time of each datapoint
-        """
         self.symbol = symbol
         self.timeframe = timeframe
         self.length = self.MAX[timeframe] if length is None else length
@@ -42,17 +39,15 @@ class Asset:
     @staticmethod
     def __get_prices_dict(history, price_type="Close"):
         # the yfinance API can have bad data in the last row of history for some reason, thus the '[:-1]'
-        return {create_np_datetime(timestamp): float(price) for timestamp, price in history[price_type][:-1].items()}
+        return {Utils.create_np_datetime(timestamp): float(price) for timestamp, price in history[price_type][:-1].items()}
 
     def get_price_by_date(self, date):
         return self.close.get_val_by_date(date)
 
     def dollar_cost_average(self, period):
-        """Calculates total times return of DCA"""
         return (self.close.values[-1] / self.close.values[::period]).mean()
 
     def lump_sum(self):
-        """Calculates total times return of a lump_sum investment"""
         return self.close.values[-1] / self.close.values[0]
 
     def plot(self, shares=1, show=True):
