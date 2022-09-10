@@ -5,4 +5,4 @@ def show_plot():
     plt.show()
 
 def create_np_datetime(timestamp):
-    return timestamp.to_datetime64().astype('datetime64[s]')
+    return timestamp.to_datetime64().astype('datetime64[m]')

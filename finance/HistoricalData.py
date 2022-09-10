@@ -7,15 +7,14 @@ from scipy import stats
 
 
 class HistoricalData:
-    def __init__(self, **kwargs):
-        dictionary = kwargs.get("dictionary")
-
-        self.values = kwargs.get("values")
-        self.interval = kwargs.get("interval")
-        self.start_date = kwargs.get("start_date")
-        self.end_date = kwargs.get("end_date")
-        self.label = kwargs.get("label")
-        self.scatter = kwargs.get("scatter")
+    def __init__(self, dictionary=None, values=None, interval=None,
+                 start_date=None, end_date=None, label=None, scatter=None):
+        self.values = values
+        self.interval = interval
+        self.start_date = start_date
+        self.end_date = end_date
+        self.label = label
+        self.scatter = scatter
 
         if dictionary is None and self.values is None:
             raise Exception("Must provide either an array or a dict")
@@ -28,13 +27,13 @@ class HistoricalData:
     def __mul__(self, num):
         try:
             float(num)
-        except TypeError:
+        except Exception:
             raise Exception("HistoricalData must be multiplied by a number")
 
         return HistoricalData(values=self.values * num, start_date=self.start_date, end_date=self.end_date)
 
     def __init_from_dict(self, dictionary):
-        dates = np.fromiter(sorted(dictionary.keys()), 'datetime64[s]')
+        dates = np.fromiter(sorted(dictionary.keys()), 'datetime64[m]')
         prices = np.fromiter((dictionary[date] for date in dates), float)
         self.start_date, self.end_date = dates[0], dates[-1]
         if self.interval is None:
