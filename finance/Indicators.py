@@ -1,4 +1,4 @@
-from HistoricalData import HistoricalData
+from finance.HistoricalData import HistoricalData
 
 import math
 import numba as nb

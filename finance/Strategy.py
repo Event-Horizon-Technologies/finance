@@ -1,4 +1,4 @@
-import Indicators
+from finance import Indicators
 
 from abc import ABC, abstractmethod
 

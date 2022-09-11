@@ -1,8 +1,8 @@
 #!/usr/bin/python
-import Indicators
-import Strategy
-from Asset import Asset
-from Simulator import Simulator
+from finance.Asset import Asset
+from finance import Indicators
+from finance.Simulator import Simulator
+from finance import Strategy
 
 import numpy as np
 import sys
