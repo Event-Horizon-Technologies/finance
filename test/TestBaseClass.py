@@ -17,9 +17,22 @@ class TestBaseClass:
         for name, var in kwargs.items():
             pickle_path = os.path.join(pickle_dir_path, f"{name}.pickle")
             if GENERATE_PICKLES:
-                pickle_dir_path.mkdir(parents=True, exist_ok=True)
-                with open(pickle_path, "wb") as f:
-                    pickle.dump(var, f)
+                TestBaseClass.generate_pickle_from_var(var, pickle_path)
             else:
-                with open(pickle_path, "rb") as f:
-                    assert var == pickle.load(f)
+                TestBaseClass.compare_var_to_pickle(var, pickle_path)
+
+
+    @staticmethod
+    def generate_pickle_from_var(var, pickle_path):
+        pickle_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(pickle_path, "wb") as f:
+            pickle.dump(var, f)
+
+    @staticmethod
+    def compare_var_to_pickle(var, pickle_path):
+        try:
+            with open(pickle_path, "rb") as f:
+                assert var == pickle.load(f)
+        except FileNotFoundError:
+            raise FileNotFoundError(f"No pickle file found at {pickle_path}. Must run generate_pickles.py first")
+
