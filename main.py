@@ -1,8 +1,5 @@
 #!/usr/bin/python
-from finance.Asset import Asset
-from finance import Indicators
-from finance.Simulator import Simulator
-from finance import Strategy
+from finance import Indicators, Simulator, Strategy, Asset
 
 import numpy as np
 import sys
@@ -23,6 +20,7 @@ def main(argv):
     s.plot(plot_assets=True)
 
     print(s.get_alpha())
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])

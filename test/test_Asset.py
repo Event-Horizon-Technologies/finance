@@ -1,4 +1,4 @@
-from finance.Asset import Asset
+from finance import Asset
 from test.TestBaseClass import TestBaseClass
 from finance import Utils
 
