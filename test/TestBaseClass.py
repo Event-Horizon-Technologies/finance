@@ -12,27 +12,20 @@ class TestBaseClass:
         test_dir_path = Path(__file__).parent
         test_class = self.__class__.__name__
         test_case = str(inspect.currentframe().f_back.f_code.co_name)
-        pickle_dir_path = test_dir_path.joinpath(test_class).joinpath(test_case)
+        pickle_jar_path = test_dir_path.joinpath(test_class).joinpath(test_case)
 
         for name, var in kwargs.items():
-            pickle_path = os.path.join(pickle_dir_path, f"{name}.pickle")
+            pickle_path = os.path.join(pickle_jar_path, f"{name}.pickle")
             if GENERATE_PICKLES:
-                TestBaseClass.generate_pickle_from_var(var, pickle_path)
+                pickle_jar_path.mkdir(parents=True, exist_ok=True)
+                with open(pickle_path, "wb") as f:
+                    pickle.dump(var, f)
             else:
-                TestBaseClass.compare_var_to_pickle(var, pickle_path)
-
-
-    @staticmethod
-    def generate_pickle_from_var(var, pickle_path):
-        pickle_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(pickle_path, "wb") as f:
-            pickle.dump(var, f)
-
-    @staticmethod
-    def compare_var_to_pickle(var, pickle_path):
-        try:
-            with open(pickle_path, "rb") as f:
-                assert var == pickle.load(f)
-        except FileNotFoundError:
-            raise FileNotFoundError(f"No pickle file found at {pickle_path}. Must run generate_pickles.py first")
-
+                try:
+                    with open(pickle_path, "rb") as f:
+                        assert var == pickle.load(f)
+                except FileNotFoundError: raise FileNotFoundError(
+                    f"No pickle file associated with test class: '{test_class}', test case: '{test_case}', "
+                    f"and variable: '{name}'.\n"
+                    f"NOTE: Run 'generate_pickles.py' to create pickles for the current functionality."
+                )
