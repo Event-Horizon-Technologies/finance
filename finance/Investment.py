@@ -1,4 +1,4 @@
-from Asset import Asset
+from finance.Asset import Asset
 
 class Investment:
     def __init__(self, symbol, timeframe):

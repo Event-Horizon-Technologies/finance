@@ -1,6 +1,6 @@
-import Utils
-from Asset import Asset
-from Investment import Investment
+from finance.Asset import Asset
+from finance.Investment import Investment
+from finance import Utils
 
 import matplotlib.pyplot as plt
 from warnings import warn

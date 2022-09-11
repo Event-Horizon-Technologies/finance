@@ -1,5 +1,5 @@
-import Utils
-from HistoricalData import HistoricalData
+from finance import Utils
+from finance.HistoricalData import HistoricalData
 
 import numpy as np
 import yfinance as yf

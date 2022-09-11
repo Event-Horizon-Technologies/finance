@@ -1,4 +1,4 @@
-import Utils
+from finance import Utils
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -31,9 +31,22 @@ class HistoricalData:
             raise Exception("HistoricalData must be multiplied by a number")
 
         return HistoricalData(values=self.values * num, start_date=self.start_date, end_date=self.end_date)
+    
+    def __eq__(self, other):
+        if type(self) != type(other):
+            raise TypeError(f"Cannot compare {type(self)} with {type(other)}")
+
+        return (
+            np.array_equal(self.values, other.values) and
+            self.interval == other.interval and
+            self.start_date == other.start_date and
+            self.end_date == other.end_date and
+            self.label == other.label and
+            self.scatter == other.scatter
+        )
 
     def __init_from_dict(self, dictionary):
-        dates = np.fromiter(sorted(dictionary.keys()), 'datetime64[m]')
+        dates = np.fromiter(sorted(dictionary.keys()), f"datetime64[{Utils.DATETIME_TYPE}]")
         prices = np.fromiter((dictionary[date] for date in dates), float)
         self.start_date, self.end_date = dates[0], dates[-1]
         if self.interval is None:
