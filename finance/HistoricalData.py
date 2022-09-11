@@ -5,8 +5,9 @@ import numpy as np
 import numba as nb
 from scipy import stats
 
-
 class HistoricalData:
+    EQUAL_TOLERANCE = 0.00001
+
     def __init__(self, dictionary=None, values=None, interval=None,
                  start_date=None, end_date=None, label=None, scatter=None):
         self.values = values
@@ -37,7 +38,7 @@ class HistoricalData:
             raise TypeError(f"Cannot compare {type(self)} with {type(other)}")
 
         return (
-            np.array_equal(self.values, other.values) and
+            np.isclose(self.values, other.values, rtol=HistoricalData.EQUAL_TOLERANCE).all() and
             self.interval == other.interval and
             self.start_date == other.start_date and
             self.end_date == other.end_date and

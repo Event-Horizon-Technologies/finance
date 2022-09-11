@@ -13,7 +13,7 @@ class TestAsset(TestBaseClass):
         self.run(open=asset.open, close=asset.close, high=asset.high, low=asset.low)
 
     def test_spy_1d(self):
-        start_date = np.datetime64("2014-09-17", Utils.DATETIME_TYPE)
+        start_date = np.datetime64("1993-01-29", Utils.DATETIME_TYPE)
         end_date = np.datetime64("2022-09-06", Utils.DATETIME_TYPE)
         asset = Asset(symbol="SPY", timeframe="1d", start_date=start_date, end_date=end_date)
 
