@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from finance import Indicators, Simulator, Strategy, Asset
+from finance import Indicators, Simulator, Strategy, Asset, Utils
 
 import numpy as np
 import sys

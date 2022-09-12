@@ -1,4 +1,3 @@
-from finance import Utils
 from finance.HistoricalData import HistoricalData
 
 import numpy as np
@@ -30,24 +29,20 @@ class Asset:
         history = self.__get_history()
         interval = self.INTERVALS[timeframe]
 
-        self.open = HistoricalData(dictionary=self.__get_prices_dict(history, price_type="Open"), interval=interval)
-        self.close = HistoricalData(dictionary=self.__get_prices_dict(history, price_type="Close"), interval=interval)
-        self.high = HistoricalData(dictionary=self.__get_prices_dict(history, price_type="High"), interval=interval)
-        self.low = HistoricalData(dictionary=self.__get_prices_dict(history, price_type="Low"), interval=interval)
+        self.open = self.__create_historical_data(history, interval, "Open")
+        self.close = self.__create_historical_data(history, interval, "Close")
+        self.high = self.__create_historical_data(history, interval, "High")
+        self.low = self.__create_historical_data(history, interval, "Low")
 
         self.start_date, self.end_date = self.close.start_date, self.close.end_date
 
     def __get_history(self):
         return yf.Ticker(self.symbol).history(interval=self.timeframe, period=self.length, auto_adjust=self.auto_adjust)
 
-    def __get_prices_dict(self, history, price_type="Close"):
+    def __create_historical_data(self, history, interval="1d", price_type="Close"):
         # the yfinance API can have bad data in the last row of history for some reason, thus the '[:-1]'
-        history = history[price_type][:-1]
-
-        if self.start_date and self.end_date:
-            history = history[(self.start_date <= history.index) & (history.index <= self.end_date)]
-
-        return {Utils.create_np_datetime(timestamp): float(price) for timestamp, price in history.items()}
+        series = history[price_type][:-1]
+        return HistoricalData(series=series, interval=interval, start_date=self.start_date, end_date=self.end_date)
 
     def get_price_by_date(self, date):
         return self.close.get_val_by_date(date)
