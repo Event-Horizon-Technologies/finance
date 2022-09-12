@@ -6,8 +6,6 @@ import numba as nb
 from scipy import stats
 
 class HistoricalData:
-    EQUAL_TOLERANCE = 0.01
-
     def __init__(self, series=None, values=None, interval=None,
                  start_date=None, end_date=None, label=None, scatter=None):
         self.values = values
@@ -38,7 +36,7 @@ class HistoricalData:
             raise TypeError(f"Cannot compare {type(self)} with {type(other)}")
 
         return (
-            np.isclose(self.values, other.values, rtol=HistoricalData.EQUAL_TOLERANCE).all() and
+            np.array_equal(self.values, other.values) and
             self.interval == other.interval and
             self.start_date == other.start_date and
             self.end_date == other.end_date and
@@ -78,7 +76,7 @@ class HistoricalData:
                 self.end_date = self.start_date + (n - 1) * self.interval
                 
     def create_pd_timestamp(self, datetime):
-        return Utils.create_pd_timestamp(datetime, tz_aware=(self.interval != np.timedelta64(1, 'D')))
+        return Utils.create_pd_timestamp(datetime, tz_aware=(self.interval < np.timedelta64(1, 'D')))
 
     @staticmethod
     def __find_time_delta(dates):

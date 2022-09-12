@@ -2,7 +2,7 @@ from finance.Asset import Asset
 
 class Investment:
     def __init__(self, symbol, timeframe):
-        self.asset = Asset(symbol, timeframe)
+        self.asset = Asset(symbol=symbol, timeframe=timeframe)
         self.quantity = 0.0
         self.fee = 0.00075
 
