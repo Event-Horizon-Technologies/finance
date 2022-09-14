@@ -47,7 +47,7 @@ class PSAR(Indicator):
         return self.create_price_indicator(asset, values, scatter=True)
 
     @staticmethod
-    @nb.njit()
+    @nb.njit(cache=True)
     def psar(close_arr, high_arr, low_arr, increment, max_alpha):
         uptrend = close_arr[0] < close_arr[1]
         values = np.empty(len(low_arr))

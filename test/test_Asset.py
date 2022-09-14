@@ -6,8 +6,8 @@ import numpy as np
 
 class TestAsset(TestBaseClass):
     def __test_asset(self, symbol, timeframe, start_date_str, end_date_str):
-        start_date = np.datetime64(start_date_str, Utils.DATETIME_TYPE)
-        end_date = np.datetime64(end_date_str, Utils.DATETIME_TYPE)
+        start_date = np.datetime64(start_date_str, Utils.DATETIME_SYMBOL)
+        end_date = np.datetime64(end_date_str, Utils.DATETIME_SYMBOL)
         history = self.get_pickle("history") if self.IN_TESTING_MODE else None
         asset = Asset(symbol=symbol, history=history, timeframe=timeframe, start_date=start_date, end_date=end_date)
 
