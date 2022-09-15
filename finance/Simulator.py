@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from warnings import warn
 
 class Simulator:
-    def __init__(self, start_date, end_date, timeframe="1d", cash=1.0):
+    def __init__(self, strategy, start_date, end_date, timeframe="1d", cash=1.0):
         self.now = start_date
         self.investments = {}
         self.indicator_data = {}
@@ -17,6 +17,7 @@ class Simulator:
         self.timeframe = timeframe
         self.cash = cash
         self.initial_cash = cash
+        self.strategy = strategy
 
     def __create_investment(self, symbol):
         self.investments[symbol] = Investment(symbol, self.timeframe)
@@ -60,7 +61,7 @@ class Simulator:
                 self.sell(symbol, -amount)
 
     def plot(self, plot_assets=False, plot_indicators=False):
-        plt.plot(self.strat_hist.keys(), self.strat_hist.values(), label="Strategy")
+        plt.plot(self.strat_hist.keys(), self.strat_hist.values(), label=self.strategy.label)
 
         if plot_assets or plot_indicators:
             for symbol, investment in self.investments.items():
@@ -84,22 +85,22 @@ class Simulator:
             raise Exception("Alpha only makes sense with one asset")
         return self.get_return() / list(self.investments.values())[0].asset.lump_sum()
 
-    def run(self, strategy):
-        self.__create_strategy_data(strategy)
-        self.__run(strategy)
+    def run(self):
+        self.__create_strategy_data()
+        self.__run()
 
-    def __create_strategy_data(self, strategy):
-        for symbol in strategy.symbols:
+    def __create_strategy_data(self):
+        for symbol in self.strategy.symbols:
             self.__create_investment(symbol)
             self.indicator_data[symbol] = {}
-            for indicator in strategy.indicators:
+            for indicator in self.strategy.indicators:
                 historical_data = indicator.create_indicator(self.investments[symbol].asset)
                 self.indicator_data[symbol][historical_data.label] = historical_data
 
-    def __run(self, strategy):
+    def __run(self):
+        self.now = self.start_date
         while self.now <= self.end_date:
-            self.make_transactions(strategy.get_transactions(self))
+            self.make_transactions(self.strategy.get_transactions(self))
             self.strat_hist[self.now] = self.get_equity() + self.cash
             self.now += self.interval
-
-
+        self.now = self.end_date

@@ -57,4 +57,4 @@ class TestBaseClass:
     def store_pickle(self, name, var):
         self.pickle_jar_path.mkdir(parents=True, exist_ok=True)
         with open(self.get_pickle_path(name), "wb") as f:
-            return pickle.dump(var, f)
+            pickle.dump(var, f)

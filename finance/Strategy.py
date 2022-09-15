@@ -11,6 +11,10 @@ class Strategy(ABC):
     @abstractmethod
     def get_transactions(self, simulator): pass
 
+    @property
+    def label(self):
+        return self.__class__.__name__
+
 class BuyAndHold(Strategy):
     def __init__(self, symbol="SPY"):
         super().__init__([symbol], [])
@@ -23,11 +27,11 @@ class MeanReversion(Strategy):
         super().__init__([symbol], [Indicators.EMA()])
         self.buy_thresh = buy_thresh
         self.sell_thresh = sell_thresh
-        self.label = self.indicators[0].label
+        self.ind_label = "EMA"
 
     def get_transactions(self, simulator):
         date = simulator.now
-        ema_val = simulator.indicator_data[self.symbols[0]][self.label].get_val_by_date(date)
+        ema_val = simulator.indicator_data[self.symbols[0]][self.ind_label].get_val_by_date(date)
         price = simulator.investments[self.symbols[0]].asset.get_price_by_date(date)
         equity = simulator.investments[self.symbols[0]].get_equity(date)
 
@@ -40,7 +44,6 @@ class MeanReversion(Strategy):
         return {}
 
 class PSAR_EMA(Strategy):
-
     def __init__(self, symbol="SPY", short_period=20, long_period=40):
         self.short_period, self.long_period = sorted((short_period, long_period))
         super().__init__([symbol], [
