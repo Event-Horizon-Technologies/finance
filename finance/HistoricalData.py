@@ -1,8 +1,8 @@
 from finance import Utils
 
 import matplotlib.pyplot as plt
-import numpy as np
 import numba as nb
+import numpy as np
 from scipy import stats
 
 class HistoricalData:
@@ -86,15 +86,12 @@ class HistoricalData:
     @staticmethod
     @nb.njit(cache=True)
     def __create_array(dates, prices, interval, size):
-        i = j = 0; values = np.empty(size)
+        j = 0; values = np.empty(size)
 
-        while i < len(prices) - 1:
-            date, price = dates[i], prices[i]
-            while date < dates[i+1]:
-                values[j] = price
-                date += interval
-                j += 1
-            i += 1
+        for i in range(len(prices) - 1):
+            n = round((dates[i+1] - dates[i]) / interval)
+            values[j:j+n] = prices[i]
+            j += n
 
         values[-1] = prices[-1]
         return values
