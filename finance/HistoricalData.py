@@ -1,13 +1,11 @@
 from finance import Utils
 
 import matplotlib.pyplot as plt
-import numpy as np
 import numba as nb
+import numpy as np
 from scipy import stats
 
 class HistoricalData:
-    EQUAL_TOLERANCE = 0.01
-
     def __init__(self, series=None, values=None, interval=None,
                  start_date=None, end_date=None, label=None, scatter=None):
         self.values = values
@@ -38,7 +36,7 @@ class HistoricalData:
             raise TypeError(f"Cannot compare {type(self)} with {type(other)}")
 
         return (
-            np.isclose(self.values, other.values, rtol=HistoricalData.EQUAL_TOLERANCE).all() and
+            np.array_equal(self.values, other.values) and
             self.interval == other.interval and
             self.start_date == other.start_date and
             self.end_date == other.end_date and
@@ -47,14 +45,15 @@ class HistoricalData:
         )
 
     def __init_from_pandas_series(self, series):
-        dates = np.array([Utils.create_np_datetime(date) for date in sorted(series.keys())])
+        dates = series.keys().to_numpy(Utils.DATETIME_TYPE)
+        prices = series.values
 
         if self.start_date:
-            dates = dates[dates >= self.start_date]
+            mask = dates >= self.start_date
+            dates, prices = dates[mask], prices[mask]
         if self.end_date:
-            dates = dates[dates <= self.end_date]
-
-        prices = np.fromiter((series[self.create_pd_timestamp(date)] for date in dates), float)
+            mask = dates <= self.end_date
+            dates, prices = dates[mask], prices[mask]
 
         self.start_date, self.end_date = dates[0], dates[-1]
         if self.interval is None:
@@ -78,24 +77,21 @@ class HistoricalData:
                 self.end_date = self.start_date + (n - 1) * self.interval
                 
     def create_pd_timestamp(self, datetime):
-        return Utils.create_pd_timestamp(datetime, tz_aware=(self.interval != np.timedelta64(1, 'D')))
+        return Utils.create_pd_timestamp(datetime, tz_aware=(self.interval < np.timedelta64(1, 'D')))
 
     @staticmethod
     def __find_time_delta(dates):
         return stats.mode(dates[1:] - dates[:-1])
 
     @staticmethod
-    @nb.njit()
+    @nb.njit(cache=True)
     def __create_array(dates, prices, interval, size):
-        i = j = 0; date = dates[0]; values = np.empty(size)
+        j = 0; values = np.empty(size)
 
-        while i < len(prices) - 1:
-            price = prices[i]
-            while date < dates[i+1]:
-                values[j] = price
-                date += interval
-                j += 1
-            i += 1
+        for i in range(len(prices) - 1):
+            n = round((dates[i+1] - dates[i]) / interval)
+            values[j:j+n] = prices[i]
+            j += n
 
         values[-1] = prices[-1]
         return values
@@ -108,15 +104,14 @@ class HistoricalData:
             raise Exception(f"Date {date} is out of bounds")
         return self.values[round((date - self.start_date) / self.interval)]
 
-    def to_dict(self):
-        return {self.start_date + i * self.interval: self.values[i] for i in range(len(self.values))}
+    def __get_dates(self):
+        return np.arange(self.start_date, self.end_date + self.interval, self.interval)
 
     def plot(self, label=None, show=True):
         if label is None: label = self.label
-        dictionary = self.to_dict()
         if self.scatter:
-            plt.scatter(dictionary.keys(), dictionary.values(), label=label, s=2, c="orange")
+            plt.scatter(self.__get_dates(), self.values, label=label, s=2, c="orange")
         else:
-            plt.plot(dictionary.keys(), dictionary.values(), label=label)
+            plt.plot(self.__get_dates(), self.values, label=label)
         if show:
             Utils.show_plot()
