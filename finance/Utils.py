@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import numba as nb
 import pandas as pd
@@ -16,10 +15,6 @@ NB_DATETIME = nb.from_dtype(MIN_DATETIME.dtype)
 NB_TIMEDELTA = nb.from_dtype(NO_TIME.dtype)
 
 PICKLE_GENERATION_MODE = '1'
-
-def show_plot():
-    plt.legend(loc="best", prop={"size": 10})
-    plt.show()
 
 def create_np_datetime(timestamp):
     return timestamp.to_datetime64().astype({DATETIME_TYPE})

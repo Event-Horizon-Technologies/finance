@@ -6,6 +6,9 @@ import numpy as np
 from scipy import stats
 
 
+def get_hd_dates(hd):
+    return np.arange(hd.start_date, hd.end_date + hd.interval, hd.interval)
+
 def __find_time_delta(dates):
     return stats.mode(dates[1:] - dates[:-1])
 
@@ -70,13 +73,13 @@ class HistoricalData:
 
         self.__init_from_numpy_array()
 
-    def __mul__(self, num):
+    def __mul__(self, num: float):
         try:
             float(num)
         except Exception:
             raise Exception("HistoricalData must be multiplied by a number")
 
-        return HistoricalData(values=self.values * num, start_date=self.start_date, end_date=self.end_date)
+        return HistoricalData(self.values * num, self.interval, self.start_date, self.end_date, self.label, self.scatter)
 
     def __eq__(self, other):
         if type(self) != type(other):
@@ -115,14 +118,5 @@ class HistoricalData:
             raise Exception(f"Date {date} is out of bounds")
         return self.values[round((date - self.start_date) / self.interval)]
 
-    def __get_dates(self):
-        return np.arange(self.start_date, self.end_date + self.interval, self.interval)
-
-    def plot(self, label="", show=True):
-        if label == "": label = self.label
-        if self.scatter:
-            plt.scatter(self.__get_dates(), self.values, label=label, s=2, c="orange")
-        else:
-            plt.plot(self.__get_dates(), self.values, label=label)
-        if show:
-            Utils.show_plot()
+    # def get_dates(self):
+    #     return np.arange(self.start_date, self.end_date + self.interval, self.interval)

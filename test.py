@@ -1,8 +1,8 @@
 import numba as nb
 import numpy as np
 from finance import create_asset
-from finance import Utils
+from finance import Utils, create_investment, plot
 
-asset = create_asset(symbol="SPY", timeframe="1d")
-print(asset.close.values)
-# asset.plot()
+investment = create_investment(symbol="SPY", timeframe="1d", quantity=1.0)
+print(investment.asset.close.values)
+plot(investment)
