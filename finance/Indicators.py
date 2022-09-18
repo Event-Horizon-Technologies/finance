@@ -6,8 +6,8 @@ import numpy as np
 from abc import ABC, abstractmethod
 
 class Indicator(ABC):
-    def __init__(self, label=None):
-        self.label = self.__class__.__name__ if label is None else label
+    def __init__(self, label=""):
+        self.label = self.__class__.__name__ if label == "" else label
 
     def create_price_indicator(self, asset, values, scatter=False):
         return HistoricalData(values=values, interval=asset.close.interval, end_date=asset.close.end_date,

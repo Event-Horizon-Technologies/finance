@@ -1,53 +1,59 @@
-from finance.HistoricalData import HistoricalData
+from finance.HistoricalData import create_hd_from_series, HistoricalData
+from finance import Utils
 
+import numba as nb
 import numpy as np
 import yfinance as yf
 
+INTERVALS = {
+    "1d": np.timedelta64(1, 'D').astype(Utils.TIMEDELTA_TYPE),
+    "1h": np.timedelta64(1, 'h').astype(Utils.TIMEDELTA_TYPE),
+    "5m": np.timedelta64(5, 'm').astype(Utils.TIMEDELTA_TYPE),
+    "1m": np.timedelta64(1, 'm').astype(Utils.TIMEDELTA_TYPE)
+}
+
+MAX = {
+    "1d": "max",
+    "1h": "730d",
+    "5m": "60d",
+    "1m": "7d"
+}
+
+def create_asset(symbol, history=None, timeframe="1d", start_date=Utils.MIN_DATETIME,
+                 end_date=Utils.MIN_DATETIME, auto_adjust=True):
+    if history is None:
+        length = MAX[timeframe]
+        history = yf.Ticker(symbol).history(interval=timeframe, period=length, auto_adjust=auto_adjust)
+
+    interval = INTERVALS[timeframe]
+
+    # the yfinance API can have bad data in the last row of history for some reason, thus the '[:-1]'
+    open  = create_hd_from_series(history["Open" ][:-1], start_date=start_date, end_date=end_date, interval=interval)
+    close = create_hd_from_series(history["Close"][:-1], start_date=start_date, end_date=end_date, interval=interval)
+    high  = create_hd_from_series(history["High" ][:-1], start_date=start_date, end_date=end_date, interval=interval)
+    low   = create_hd_from_series(history["Low"  ][:-1], start_date=start_date, end_date=end_date, interval=interval)
+
+    return Asset(symbol, open, close, high, low)
+
+
+spec = [
+    ("symbol", nb.types.unicode_type),
+    ("start_date", Utils.NB_DATETIME),
+    ("end_date", Utils.NB_DATETIME),
+    ("interval", Utils.NB_TIMEDELTA)
+]
+
+@nb.experimental.jitclass(spec)
 class Asset:
-    INTERVALS = {
-        "1d": np.timedelta64(1, 'D'),
-        "1h": np.timedelta64(1, 'h'),
-        "5m": np.timedelta64(5, 'm'),
-        "1m": np.timedelta64(1, 'm')
-    }
+    open: HistoricalData
+    close: HistoricalData
+    high: HistoricalData
+    low: HistoricalData
 
-    MAX = {
-        "1d": "max",
-        "1h": "730d",
-        "5m": "60d",
-        "1m": "7d"
-    }
-
-    def __init__(self, symbol, history=None, timeframe="1d",
-                 length=None, auto_adjust=True, start_date=None, end_date=None):
+    def __init__(self, symbol, open, close, high, low):
         self.symbol = symbol
-        self.timeframe = timeframe
-        self.length = self.MAX[timeframe] if length is None else length
-        self.auto_adjust = auto_adjust
-        self.start_date = start_date
-        self.end_date = end_date
-        self.history = self.__get_history() if history is None else history
-
-        interval = self.INTERVALS[timeframe]
-
-        self.open = self.__create_historical_data(interval, "Open")
-        self.close = self.__create_historical_data(interval, "Close")
-        self.high = self.__create_historical_data(interval, "High")
-        self.low = self.__create_historical_data(interval, "Low")
-
-        self.start_date, self.end_date = self.close.start_date, self.close.end_date
-
-    @staticmethod
-    def get_history(symbol, timeframe, length, auto_adjust):
-        return yf.Ticker(symbol).history(interval=timeframe, period=length, auto_adjust=auto_adjust)
-
-    def __get_history(self):
-        return Asset.get_history(self.symbol, self.timeframe, self.length, self.auto_adjust)
-
-    def __create_historical_data(self, interval="1d", price_type="Close"):
-        # the yfinance API can have bad data in the last row of history for some reason, thus the '[:-1]'
-        series = self.history[price_type][:-1]
-        return HistoricalData(series=series, interval=interval, start_date=self.start_date, end_date=self.end_date)
+        self.open = open; self.close = close; self.high = high; self.low = low
+        self.start_date = self.close.start_date; self.end_date = self.close.end_date; self.interval = self.close.interval
 
     def get_price_by_date(self, date):
         return self.close.get_val_by_date(date)

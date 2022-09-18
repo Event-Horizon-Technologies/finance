@@ -1,6 +1,7 @@
 #!/usr/bin/python
-from finance import Indicators, Simulator, Strategy, Asset, Utils
+from finance import Indicators, Simulator, Strategy, Asset, Utils, HistoricalData
 
+import numba
 import numpy as np
 import sys
 
@@ -16,7 +17,16 @@ def main(argv):
     cash = asset.get_price_by_date(start)
 
     s = Simulator(strategy=Strategy.PSAR_EMA(symbol), start_date=start, end_date=end, timeframe=timeframe, cash=cash)
-    s.run()
+    from time import time
+
+    sum = 0
+    n = 20
+    for i in range(n):
+        start = time()
+        s.run()
+        sum += time() - start
+    print(sum / n)
+
     s.plot(plot_assets=True)
 
     print(s.get_alpha())

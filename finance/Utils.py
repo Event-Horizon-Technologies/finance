@@ -1,8 +1,20 @@
 import matplotlib.pyplot as plt
+import numpy as np
+import numba as nb
 import pandas as pd
+
+from datetime import datetime
 
 DATETIME_SYMBOL = 'm'
 DATETIME_TYPE = f"datetime64[{DATETIME_SYMBOL}]"
+TIMEDELTA_TYPE = f"timedelta64[{DATETIME_SYMBOL}]"
+
+NO_TIME = np.timedelta64(0, DATETIME_SYMBOL)
+MIN_DATETIME = np.datetime64(datetime.min, DATETIME_SYMBOL)
+
+NB_DATETIME = nb.from_dtype(MIN_DATETIME.dtype)
+NB_TIMEDELTA = nb.from_dtype(NO_TIME.dtype)
+
 PICKLE_GENERATION_MODE = '1'
 
 def show_plot():
