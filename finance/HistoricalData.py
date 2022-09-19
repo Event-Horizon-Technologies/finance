@@ -114,8 +114,5 @@ class HistoricalData:
 
     def get_val_by_date(self, date):
         if not self.in_bounds(date):
-            raise Exception(f"Date {date} is out of bounds")
+            raise Exception("Date is out of bounds")
         return self.values[round((date - self.start_date) / self.interval)]
-
-    # def get_dates(self):
-    #     return np.arange(self.start_date, self.end_date + self.interval, self.interval)

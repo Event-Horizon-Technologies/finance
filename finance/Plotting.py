@@ -1,6 +1,7 @@
 from finance.HistoricalData import HistoricalData, get_hd_dates
 from finance.Asset import Asset
 from finance.Investment import Investment
+from finance.Simulator import Simulator
 
 import matplotlib.pyplot as plt
 
@@ -24,7 +25,18 @@ def __plot_investment(investment, label=""):
     if label == "": label = investment.asset.symbol
     __plot_asset(investment.asset, label, investment.quantity)
 
-def plot(data, label="", shares=1.0):
+def __plot_simulator(simulator, plot_assets=False, plot_indicators=False):
+    plt.plot(simulator.strat_hist.keys(), simulator.strat_hist.values(), label=simulator.strategy.label)
+
+    for symbol, investment in simulator.investments.items():
+        if plot_assets:
+            plot(investment, show=False)
+
+        if plot_indicators:
+            for label, hd in simulator.indicator_data[symbol].items():
+                plot(hd * investment.quantity, label=f"{symbol} {label}", show=False)
+
+def plot(data, label="", shares=1.0, plot_assets=False, plot_indicators=False, show=True):
     match data:
         case HistoricalData():
             __plot_hd(data, label)
@@ -32,5 +44,7 @@ def plot(data, label="", shares=1.0):
             __plot_asset(data, label, shares)
         case Investment():
             __plot_investment(data, label)
+        case Simulator():
+            __plot_simulator(data, plot_assets, plot_indicators)
 
-    show_plot()
+    if show: show_plot()

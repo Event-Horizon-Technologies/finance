@@ -1,6 +1,5 @@
-from finance.Asset import Asset
-from finance.Investment import Investment
-from finance import Utils
+from finance.Investment import Investment, create_investment
+from finance import Utils, Plotting
 
 import matplotlib.pyplot as plt
 from warnings import warn
@@ -11,7 +10,7 @@ class Simulator:
         self.investments = {}
         self.indicator_data = {}
         self.strat_hist = {}
-        self.interval = Asset.INTERVALS[timeframe]
+        self.interval = Utils.INTERVALS[timeframe]
         self.start_date = start_date
         self.end_date = end_date
         self.timeframe = timeframe
@@ -20,7 +19,7 @@ class Simulator:
         self.strategy = strategy
 
     def __create_investment(self, symbol):
-        self.investments[symbol] = Investment(symbol, self.timeframe)
+        self.investments[symbol] = create_investment(symbol, self.timeframe)
 
     def buy(self, symbol, amount):
         if amount > self.cash:
@@ -60,22 +59,6 @@ class Simulator:
             else:
                 self.sell(symbol, -amount)
 
-    def plot(self, plot_assets=False, plot_indicators=False):
-        plt.plot(self.strat_hist.keys(), self.strat_hist.values(), label=self.strategy.label)
-
-        if plot_assets or plot_indicators:
-            for symbol, investment in self.investments.items():
-                asset = investment.asset
-                shares = self.initial_cash / asset.get_price_by_date(self.start_date)
-
-                if plot_assets:
-                    asset.plot(shares=shares, show=False)
-
-                if plot_indicators:
-                    for label, data in self.indicator_data[symbol].items():
-                        (data * shares).plot(show=False, label=f"{symbol} {label}")
-
-        Utils.show_plot()
 
     def get_return(self):
         return (self.get_equity() + self.cash) / self.initial_cash
