@@ -5,7 +5,7 @@ from finance.Investment import Investment
 import matplotlib.pyplot as plt
 
 def show_plot():
-    plt.legend(loc="best", prop={"size": 10})
+    plt.legend(loc="best", prop={"size": 15})
     plt.show()
 
 def __plot_hd(hd, label=""):

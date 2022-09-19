@@ -1,6 +1,5 @@
 from finance import Utils
 
-import matplotlib.pyplot as plt
 import numba as nb
 import numpy as np
 from scipy import stats
