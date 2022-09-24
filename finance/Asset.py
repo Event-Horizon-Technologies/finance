@@ -34,6 +34,7 @@ class Asset:
         self.close = self.__create_historical_data(interval, "Close")
         self.high = self.__create_historical_data(interval, "High")
         self.low = self.__create_historical_data(interval, "Low")
+        self.volume = self.__create_historical_data(interval, "Volume")
 
         self.start_date, self.end_date = self.close.start_date, self.close.end_date
 
