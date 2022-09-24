@@ -1,0 +1,25 @@
+The basic idea I have for the neural network is to give it as input a bunch of values for indicators or anything really at a given date
+	Then the prediction should be ln( <price sometime in the future> / <today's price> ). 1 month?
+
+Stuff that is proportional to price like ema and psar should be divided by the price
+	Probably book value and earnings if we do that
+
+Take the log of multiplicitive things
+
+Probably want to standardize across the data
+
+Use things related to volume
+	We want some indicator that stays around some mean, and wouldn't go super high if the volume explodes (when btc takes off or something)
+		As a simple example, derivative of volume
+		EMAs of volume for different periods makes some sense
+	May still want to use the volume itself. High volume assets probably behave differently than low ones.
+
+Should we also standardize within data?
+	Perhaps the mean and std of the data itself is information we don't want to lose
+
+Include market cap
+
+Do we want something based on volitility? 
+
+In general, do we want to give it specific indicators, or more general things like price, volume, momentum, etc. and allow it more freedom?
+
