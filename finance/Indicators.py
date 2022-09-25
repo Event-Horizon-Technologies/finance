@@ -19,7 +19,7 @@ class Indicator(ABC):
 
     def create_neural_net_data(self, asset=None, prediction_offset=30):
         # The neural network will be trained to predict the price 'prediction_offset' timesteps in the future
-        # Means we have to trim the end of array so the prediction won't go wout of bounds
+        # Means we have to trim the end of array so the prediction won't go out of bounds
         return np.log(self.get_values(asset) / asset.close.values)[:-prediction_offset]
 
 class SMA(Indicator):
