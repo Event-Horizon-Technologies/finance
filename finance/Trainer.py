@@ -1,8 +1,7 @@
-import numpy as np
-
 from finance.Asset import Asset
 from finance import Utils
 
+import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 
