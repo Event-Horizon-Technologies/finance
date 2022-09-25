@@ -9,9 +9,9 @@ def main(argv):
     timeframe = argv[1] if len(argv) > 1 else "1d"
 
     trainer = Trainer()
-    input_data, target_data = trainer.generate_data(["BTC-USD", "ETH-USD"], [Indicators.EMA(20), Indicators.EMA(40)])
-
-    print(input_data, target_data)
+    trainer.generate_data(["BTC-USD", "ETH-USD"], [Indicators.PSAR(), Indicators.EMA(20), Indicators.EMA(40)])
+    trainer.create_model()
+    trainer.train()  # https://www.youtube.com/watch?v=5dx3XD46fE0
 
 if __name__ == "__main__":
     main(sys.argv[1:])
