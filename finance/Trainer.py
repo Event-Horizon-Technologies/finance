@@ -13,6 +13,16 @@ class Trainer:
     def input_size(self):
         return self.input_data.shape[1] if self.input_data else 0
 
+    def create_model(self, hidden_layers=8, width=16, activation=keras.activations.selu, dropout=0.5):
+        model = keras.models.Sequential()
+        model.add(keras.layers.Dense(units=width, input_shape=(self.input_size,), activation=activation))
+        model.add(keras.layers.Dropout(dropout))
+        for i in range(hidden_layers):
+            model.add(keras.layers.Dense(units=width, activation=activation))
+            model.add(keras.layers.Dropout(dropout))
+        model.add(keras.layers.Dense(units=1))
+        return model
+
     def generate_data(self, symbols, indicators, timeframe="1d", prediction_offset=30):
         input_data = []; target_data = []
 
