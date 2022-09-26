@@ -20,6 +20,19 @@ MAX = {
     "1m": "7d"
 }
 
+class Format:
+    def __init__(self):
+        raise Exception(f"Cannot instantiate static class {self.__class__.__name__}")
+    
+    BLUE = '\033[94m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
+    NONE = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    
+
 
 def show_plot():
     plt.legend(loc="best", prop={"size": 10})
