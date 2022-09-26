@@ -1,9 +1,10 @@
 from finance.Asset import Asset
 
-from keras import activations, callbacks, layers, losses, models, optimizers
 import numpy as np
 import pickle
 import sys
+from keras import activations, callbacks, layers, losses, models, optimizers
+from pathlib import Path
 
 class Trainer:
     def __init__(self):
@@ -32,7 +33,16 @@ class Trainer:
         self.input_test /= self.input_stds
         self.target_test /= self.target_std
 
-    def create_model(self, hidden_layers=8, width=16, activation=activations.selu, dropout=0.5):
+    @staticmethod
+    def __create_assets(symbols, timeframe="1d"):
+        return [Asset(symbol=symbol, timeframe=timeframe) for symbol in symbols]
+
+    @staticmethod
+    def create_pickled_assets(symbols, timeframe, pickle_path):
+        with open(pickle_path, "wb") as f:
+            pickle.dump(Trainer.__create_assets(symbols, timeframe), f)
+
+    def create_model(self, hidden_layers=16, width=32, activation=activations.selu, dropout=0.5):
         self.model = models.Sequential()
 
         self.model.add(layers.Dense(units=width, input_shape=(self.input_size,), activation=activation))
@@ -42,11 +52,23 @@ class Trainer:
             self.model.add(layers.Dropout(dropout))
         self.model.add(layers.Dense(units=1))
 
-        self.model.compile(optimizer=optimizers.SGD(), loss=losses.MeanSquaredError())
+        # self.model.compile(optimizer=optimizers.SGD(), loss=losses.MeanSquaredError())
+        self.model.compile(optimizer=optimizers.Adam(), loss=losses.MeanSquaredError())
 
-    def generate_data(self, symbols, indicators, timeframe="1d", prediction_offset=30, validation_split=0.1):
+    def generate_data(self, saved_assets=None, symbols=None, timeframe="1d",
+                      indicators=None, prediction_offset=30, validation_split=0.1):
+        if not (saved_assets or symbols):
+            raise Exception("No assets to generate data with. Must provide either 'symbols' or 'saved_assets'")
+        if not indicators:
+            raise Exception("No indicators provided")
+
+        if saved_assets:
+            with open(Path(saved_assets), "rb") as f:
+                assets = pickle.load(f)
+        else:
+            assets = self.__create_assets(symbols, timeframe)
+
         input_train = []; target_train = []; input_test = []; target_test = []
-        assets = [Asset(symbol=symbol, timeframe=timeframe) for symbol in symbols]
         data_points = sum(len(asset.close.values) - prediction_offset for asset in assets)
         test_offset = round(validation_split * data_points / len(assets))
         test_offset = min(test_offset, min(len(asset.close.values) for asset in assets))
