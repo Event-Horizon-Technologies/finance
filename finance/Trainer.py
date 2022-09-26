@@ -7,10 +7,25 @@ from keras import activations, layers, losses, models, optimizers
 class Trainer:
     def __init__(self):
         self.input_data = self.target_data = self.model = None
+        self.input_means = self.target_mean = 0.0
+        self.input_stds = self.target_std = 1.0
 
     @property
     def input_size(self):
         return self.input_data.shape[1] if self.input_data is not None else 0
+
+    def __standardize(self):
+        self.input_means = np.apply_along_axis(np.mean, 0, self.input_data)
+        self.target_mean = np.mean(self.target_data)
+
+        self.input_data -= self.input_means
+        self.target_data -= self.target_mean
+
+        self.input_stds = np.apply_along_axis(np.std, 0, self.input_data)
+        self.target_std = np.std(self.target_data)
+
+        self.input_data /= self.input_stds
+        self.target_data /= self.target_std
 
     def create_model(self, hidden_layers=8, width=16, activation=activations.selu, dropout=0.5):
         self.model = models.Sequential()
@@ -35,18 +50,15 @@ class Trainer:
             target_data.append(np.log(prices[prediction_offset:] / prices[:-prediction_offset]))
 
         self.input_data, self.target_data = np.concatenate(input_data), np.concatenate(target_data)
+        self.__standardize()
 
-    def train(self, batch_size=32, epochs=2):
+    def train(self, batch_size=32, epochs=100):
         self.model.fit(x=self.input_data, y=self.target_data, batch_size=batch_size, epochs=epochs)
 
     def load_data(self, path_to_data):
-        with open(path_to_data.joinpath("input_data.pickle"), "rb") as f:
-            self.input_data = pickle.load(f)
-        with open(path_to_data.joinpath("target_data.pickle"), "rb") as f:
-            self.target_data = pickle.load(f)
+        with open(path_to_data, "rb") as f:
+            self.__dict__ = pickle.load(f)
 
     def save_data(self, path_to_data):
         with open(path_to_data.joinpath("input_data.pickle"), "wb") as f:
-            pickle.dump(self.input_data, f)
-        with open(path_to_data.joinpath("target_data.pickle"), "wb") as f:
-            pickle.dump(self.target_data, f)
+            pickle.dump(self.__dict__, f)
