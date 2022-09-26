@@ -22,7 +22,8 @@ MAX = {
 
 class Format:
     def __init__(self):
-        raise Exception(f"Cannot instantiate static class {self.__class__.__name__}")
+        exception_string = f"Cannot instantiate static class: {self.__class__.__name__}"
+        raise Exception(exception_string)
     
     BLUE = '\033[94m'
     GREEN = '\033[92m'
