@@ -32,8 +32,8 @@ class Asset:
         return Asset.get_history(self.symbol, self.timeframe, self.length, self.auto_adjust)
 
     def __create_historical_data(self, interval="1d", price_type="Close"):
-        # the yfinance API can have bad data in the last row of history for some reason, thus the '[:-1]'
-        series = self.history[price_type][:-1]
+        # the yfinance API can have bad data in the first and last row of history for some reason, thus the '[1:-1]'
+        series = self.history[price_type][1:-1]
         return HistoricalData(series=series, interval=interval, start_date=self.start_date, end_date=self.end_date)
 
     def get_price_by_date(self, date):
