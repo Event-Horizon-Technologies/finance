@@ -45,6 +45,9 @@ class Trainer:
         with open(pickle_path, "wb") as f:
             pickle.dump(Trainer.__create_assets(symbols, timeframe), f)
 
+    def save_model(self, path):
+        self.model.save(path)
+
     def create_model(self, hidden_layers=16, width=32, activation=activations.selu, dropout=0.5):
         self.model = models.Sequential()
 
