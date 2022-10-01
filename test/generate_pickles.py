@@ -6,13 +6,13 @@ from pathlib import Path
 
 DIR = Path(__file__).parent
 sys.path.append(str(DIR.parent))
-from finance import Utils, Format
+from finance import Utils
 
-SUCCESS_STR = Format.GREEN + \
+SUCCESS_STR = Utils.Format.GREEN + \
               "##########################################################################\n" + \
               "#                         GENERATED ALL PICKLES!                         #\n" + \
               "##########################################################################"   + \
-              Format.NONE
+              Utils.Format.NONE
 
 for path in DIR.glob("Test*"):
     if path.is_dir():
@@ -25,4 +25,4 @@ try:
     subprocess.check_output("pytest", stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
     print(SUCCESS_STR)
 except subprocess.CalledProcessError as exc:
-    print(f"{Format.RED}{exc.output}{Format.NONE}")
+    print(f"{Utils.Format.RED}{exc.output}{Utils.Format.NONE}")

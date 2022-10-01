@@ -26,7 +26,7 @@ class HistoricalData:
     def __mul__(self, num):
         try:
             float(num)
-        except Exception:
+        except (TypeError, ValueError):
             raise Exception("HistoricalData must be multiplied by a number")
 
         return HistoricalData(values=self.values * num, start_date=self.start_date, end_date=self.end_date)

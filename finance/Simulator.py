@@ -11,7 +11,7 @@ class Simulator:
         self.investments = {}
         self.indicator_data = {}
         self.strat_hist = {}
-        self.interval = Asset.INTERVALS[timeframe]
+        self.interval = Utils.INTERVALS[timeframe]
         self.start_date = start_date
         self.end_date = end_date
         self.timeframe = timeframe
