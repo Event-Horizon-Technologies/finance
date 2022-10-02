@@ -21,7 +21,7 @@ class TestBaseClass:
                         f"test case: '{self.test_case}', and variable: '{name}'.\n"
                         f"NOTE: Run 'generate_pickles.py' to create pickles for the current functionality."
                     )
-                assert var == rick
+                assert var == rick, f"'{name}' data did not match pickle data"
 
     @property
     def test_dir_path(self):
