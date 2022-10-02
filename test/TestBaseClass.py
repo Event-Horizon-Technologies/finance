@@ -1,9 +1,9 @@
+from finance import Utils
+
 import inspect
 import os
 import pickle
 from pathlib import Path
-
-from finance import Utils
 
 class TestBaseClass:
     IN_PICKLE_GENERATION_MODE = os.environ.get("MODE") == Utils.PICKLE_GENERATION_MODE
