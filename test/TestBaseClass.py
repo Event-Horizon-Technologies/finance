@@ -42,7 +42,7 @@ class TestBaseClass:
 
     @property
     def pickle_jar_path(self):
-        return self.test_dir_path.joinpath(self.test_class).joinpath(self.test_case)
+        return self.test_dir_path.joinpath(f"data/{self.test_class}/{self.test_case}")
 
     def get_pickle_path(self, name):
         return self.pickle_jar_path.joinpath(f"{name}.pickle")
