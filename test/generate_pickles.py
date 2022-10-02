@@ -1,12 +1,16 @@
+#need to do this first
+from pathlib import Path
+import sys
+DIR = Path(__file__).parent
+sys.path.append(str(DIR.parent))
+
+#our package imports first
+from finance import Utils
+
+#then other imports
 import os
 import shutil
 import subprocess
-import sys
-from pathlib import Path
-
-DIR = Path(__file__).parent
-sys.path.append(str(DIR.parent))
-from finance import Utils
 
 SUCCESS_STR = Utils.Format.GREEN + \
               "##########################################################################\n" + \
