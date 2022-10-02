@@ -22,5 +22,5 @@ def main(argv):
     print(s.get_alpha())
 
 
-if __name__ == "__simulator__":
+if __name__ == "__main__":
     main(sys.argv[1:])
