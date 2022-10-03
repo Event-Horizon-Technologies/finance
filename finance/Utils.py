@@ -21,10 +21,6 @@ MAX = {
 }
 
 class Format:
-    def __init__(self):
-        exception_string = f"Cannot instantiate static class: {self.__class__.__name__}"
-        raise Exception(exception_string)
-    
     BLUE = '\033[94m'
     GREEN = '\033[92m'
     YELLOW = '\033[93m'
@@ -32,7 +28,34 @@ class Format:
     NONE = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
-    
+
+    def __init__(self):
+        exception_string = f"Cannot instantiate static class: {self.__class__.__name__}"
+        raise Exception(exception_string)
+
+    @staticmethod
+    def blue(string):
+        return f"{Format.BLUE}{string}{Format.NONE}"
+
+    @staticmethod
+    def green(string):
+        return f"{Format.GREEN}{string}{Format.NONE}"
+
+    @staticmethod
+    def yellow(string):
+        return f"{Format.YELLOW}{string}{Format.NONE}"
+
+    @staticmethod
+    def red(string):
+        return f"{Format.RED}{string}{Format.NONE}"
+
+    @staticmethod
+    def bold(string):
+        return f"{Format.BOLD}{string}{Format.NONE}"
+
+    @staticmethod
+    def underline(string):
+        return f"{Format.UNDERLINE}{string}{Format.NONE}"
 
 
 def show_plot():

@@ -15,12 +15,10 @@ class TestBaseClass:
                 self.store_pickle(name, var)
             else:
                 rick = self.get_pickle(name)
-                if rick is None:
-                    raise FileNotFoundError(
-                        f"No pickle file associated with test class: '{self.test_class}', "
-                        f"test case: '{self.test_case}', and variable: '{name}'.\n"
-                        f"NOTE: Run 'generate_pickles.py' to create pickles for the current functionality."
-                    )
+                assert rick is not None, Utils.Format.red(
+                    f"Missing pickle files associated with test class '{self.test_class}'. "
+                    f"Run 'generate_pickles.py' to create pickles for the current functionality."
+                )
                 assert var == rick, f"'{name}' data did not match pickle data"
 
     @property
