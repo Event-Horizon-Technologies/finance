@@ -6,12 +6,11 @@ import subprocess
 from pathlib import Path
 
 DIR = Path(__file__).parent
-SUCCESS_STR = Utils.Format.GREEN + \
-              "##########################################################################\n" + \
-              "#                         GENERATED ALL PICKLES!                         #\n" + \
-              "##########################################################################"   + \
-              Utils.Format.NONE
-
+SUCCESS_STR = Utils.Format.green(
+    "##########################################################################\n" + \
+    "#                         GENERATED ALL PICKLES!                         #\n" + \
+    "##########################################################################"
+)
 for path in DIR.glob("Test*"):
     if path.is_dir():
         shutil.rmtree(path)
@@ -23,4 +22,4 @@ try:
     subprocess.check_output("pytest", stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
     print(SUCCESS_STR)
 except subprocess.CalledProcessError as exc:
-    print(f"{Utils.Format.RED}{exc.output}{Utils.Format.NONE}")
+    print(Utils.Format.red(exc.output))
