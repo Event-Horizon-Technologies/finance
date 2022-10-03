@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 from finance import Indicators, Simulator, Strategy, Asset, Utils
 
 import numpy as np

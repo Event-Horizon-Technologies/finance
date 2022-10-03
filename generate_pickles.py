@@ -4,7 +4,7 @@ import os
 import shutil
 import subprocess
 from pathlib import Path
-
+#!/usr/bin/env python3
 DIR = Path(__file__).parent
 SUCCESS_STR = Utils.Format.green(
     "##########################################################################\n" + \
