@@ -1,4 +1,3 @@
-# Project
 An attempt to disprove the [efficient market hypothesis](https://en.wikipedia.org/wiki/Efficient-market_hypothesis) with math. 
 
 https://en.wikipedia.org/wiki/Jim_Simons_(mathematician) \
