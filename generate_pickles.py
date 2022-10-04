@@ -8,8 +8,8 @@ from pathlib import Path
 
 DIR = Path(__file__).parent
 SUCCESS_STR = Utils.Format.green(
-    "##########################################################################\n" + 
-    "#                         GENERATED ALL PICKLES!                         #\n" + 
+    "##########################################################################\n"
+    "#                         GENERATED ALL PICKLES!                         #\n"
     "##########################################################################"
 )
 for path in DIR.glob("Test*"):
