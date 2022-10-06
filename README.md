@@ -12,6 +12,10 @@ https://en.wikipedia.org/wiki/Markowitz_model \
 https://en.wikipedia.org/wiki/Black%E2%80%93Litterman_model \
 https://en.wikipedia.org/wiki/Black%E2%80%93Scholes_model \
 
+## Fast API
+
+## PostgreSQL
+
 ## Simulator
 
 ## Trainer
