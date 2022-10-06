@@ -12,5 +12,7 @@
 				"ms-python.python"
 			]
 		}
-	}
+	},
+
+	"remoteUser": "vscode"
 }
