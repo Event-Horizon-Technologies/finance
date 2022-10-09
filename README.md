@@ -32,10 +32,8 @@ https://en.wikipedia.org/wiki/Black%E2%80%93Scholes_model \
 
 ## Setup
 
-### Virtual environment
-
 ### Docker
 
-## Development and Testing environment
+#### Development and Testing environment
 
-## Production environment 
+#### Production environment 
