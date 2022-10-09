@@ -36,3 +36,6 @@ https://en.wikipedia.org/wiki/Black%E2%80%93Scholes_model \
 
 ### Docker
 
+## Development and Testing environment
+
+## Production environment 
