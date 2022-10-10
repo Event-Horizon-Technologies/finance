@@ -18,7 +18,6 @@ class TestAsset(TestBaseClass):
 
     def test_btc_1d(self):
         self.__test_asset(symbol="BTC-USD", timeframe="1d", start_date_str="2014-09-18", end_date_str="2022-09-06")
-        assert False
 
     def test_btc_1h(self):
         self.__test_asset(symbol="BTC-USD", timeframe="1h", start_date_str="2021-09-06", end_date_str="2022-09-06")
