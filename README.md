@@ -17,5 +17,4 @@ An attempt to disprove the [efficient market hypothesis](https://en.wikipedia.or
 ## Using Visual Studio Code
 Download the Dev Containers extension on Visual Studio Code. You can then build and launch the `devcontainer` which will give you a whole environment that has all dependencies installed, and allow you to immediately start developing & testing
 
-## Production environment 
-New change
+## Production environment
