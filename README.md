@@ -32,8 +32,7 @@ https://en.wikipedia.org/wiki/Black%E2%80%93Scholes_model \
 
 ## Setup
 
-### Docker
-
-#### Development and Testing environment
+### Using VsCode
+Download the `Dev Containers` extension on VSCode. You can then build and launch the `devcontainer` which will give you a whole environment that has all dependencies installed, and can immediately start developing.
 
 #### Production environment 
