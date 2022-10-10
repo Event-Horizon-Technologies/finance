@@ -14,7 +14,7 @@ An attempt to disprove the [efficient market hypothesis](https://en.wikipedia.or
 * [Black Litterman Model](https://en.wikipedia.org/wiki/Black%E2%80%93Litterman_model)
 * [Black Scholes Model](https://en.wikipedia.org/wiki/Black%E2%80%93Scholes_model)
 
-## Using VsCode
-Download the `Dev Containers` extension on VSCode. You can then build and launch the `devcontainer` which will give you a whole environment that has all dependencies installed, and allow you to immediately start developing & testing
+## Using Visual Studio Code
+Download the Dev Containers extension on Visual Studio Code. You can then build and launch the `devcontainer` which will give you a whole environment that has all dependencies installed, and allow you to immediately start developing & testing
 
 ## Production environment 
