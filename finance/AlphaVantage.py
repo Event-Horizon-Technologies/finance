@@ -1,3 +1,6 @@
+from lib2to3.pgen2.token import BACKQUOTE
+from os import stat
+import re
 import Utils
 
 import pandas
@@ -33,8 +36,45 @@ class AlphaVantage(Utils.Static):
     @staticmethod
     def get_daily_request(symbol, outputsize="compact", datatype="csv"):
         return requests.get(
-            f"{URL_BASE}function=TIME_SERIES_DAILY&symbol={symbol}&outputsize={outputsize}&datatype={datatype}"
+            f"{URL_BASE}function=TIME_SERIES_DAILY&symbol={symbol}&outputsize={outputsize}&datatype={datatype}&apikey={API_KEY}"
         )
+
+    @staticmethod
+    def get_daily_adjusted_request(symbol, outputsize="compact", datatype="csv"):
+        return requests.get(
+            f"{URL_BASE}function=TIME_SERIES_DALY_ADJUSTED&symbol={symbol}&outputsize={outputsize}&datatype={datatype}&apikey={API_KEY}"
+        )
+
+    @staticmethod
+    def get_weekly_request(symbol, datatype="csv"):
+        return requests.get(
+            f"{URL_BASE}function=TIME_SERIES_WEEKLY&symbol={symbol}&datatype={datatype}&apikey={API_KEY}"
+        )
+
+    @staticmethod
+    def get_monthly_request(symbol, datatype="csv"):
+        return requests.get(
+            f"{URL_BASE}function=TIME_SERIES_MONTHLY&symbol={symbol}&datatype={datatype}&apikey={API_KEY}"
+        )
+
+    @staticmethod
+    def get_monthly_adjusted_request(symbol, datatype="csv"):
+        return requests.get(
+            f"{URL_BASE}function=TIME_SERIES_MONTHLY_ADJUSTED&symbol={symbol}&datatype={datatype}&apikey={API_KEY}"
+        )
+
+    @staticmethod
+    def get_quote_endpoint_request(symbol, datatype="csv"):
+        return requests.get(
+            f"{URL_BASE}function=GLOBAL_QUOTE&symbol={symbol}&datatype={datatype}&apikey={API_KEY}"
+        )
+    
+    @staticmethod
+    def get_search_endpoint_request(keywords, datatype="csv"):
+        return requests.get(
+            f"{URL_BASE}function=SYMBOL_SEARCH&keywords={keywords}&datatype={datatype}&apikey={API_KEY}"
+        )
+
 
 def is_crypto(symbol):
     with open(CRYPTO_LIST) as f:
