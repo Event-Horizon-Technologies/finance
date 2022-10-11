@@ -1,3 +1,7 @@
+from termios import TIOCGLCKTRMIOS
+from time import time
+
+from matplotlib import ticker
 import Utils
 
 import pandas
@@ -11,13 +15,12 @@ INTERVAL = "5min"
 API_KEY = "ZZ7E9KFFYTKGZ0XR"
 CRYPTO_LIST = Path(__file__).parent.joinpath("crypto_list.txt")
 
-"""
-Assuming we are going to store some data here eventually, otherwise we don't need the class.
-"""
+"""finance AlphaVantageAPI wrapper class"""
 class AlphaVantage(Utils.Static):
     def __init__(self):
         super().__init__()
     
+    """Core Stock API start"""
     @staticmethod
     def get_intraday_request(symbol, interval, adjusted="true", outputsize="compact", datatype="csv"):
         return requests.get(
@@ -71,7 +74,21 @@ class AlphaVantage(Utils.Static):
         return requests.get(
             f"{URL_BASE}function=SYMBOL_SEARCH&keywords={keywords}&datatype={datatype}&apikey={API_KEY}"
         )
+    """Core Stock API end"""
 
+    """Alpha Intelligence start"""
+    @staticmethod
+    def get_news_and_sentiments(tickers="", topics="", time_from="", time_to="", sort="LATEST", limit="50"):
+        return requests.get(
+            f"{URL_BASE}function=NEWS_SENTIMENT&tickers={tickers}&topics={topics}&time_from={time_from}&time_to={time_to}&sort={sort}&limit={limit}&apikey={API_KEY}"
+        )
+    
+    @staticmethod
+    def get_winning_portfolios(season):
+        return requests.get(
+            f"{URL_BASE}function=TOURNAMENT_PORTFOLIO&season={season}&apikey={API_KEY}"
+        )
+    """Alpha Intelligence end"""
 
 def is_crypto(symbol):
     with open(CRYPTO_LIST) as f:
