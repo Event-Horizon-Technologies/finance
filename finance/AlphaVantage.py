@@ -1,3 +1,5 @@
+import Utils
+
 import pandas
 import requests
 from io import StringIO
@@ -8,6 +10,18 @@ SYMBOL = "TSLA"
 INTERVAL = "5min"
 API_KEY = "ZZ7E9KFFYTKGZ0XR"
 CRYPTO_LIST = Path(__file__).parent.joinpath("crypto_list.txt")
+
+class AlphaVantage(Utils.Static):
+    def __init__(self):
+        super().__init__()
+    
+    @staticmethod
+    def get_intraday_url(symbol, interval, adjusted="true", outputsize="compact", datatype="csv"):
+        return f"{URL_BASE}function=TIME_SERIES_INTRADAY&symbol={symbol}&interval={interval}&outputsize={outputsize}&datatype={datatype}&apikey={API_KEY}"
+    
+    @staticmethod
+    def get_intraday_extended_url(symbol, interval, slice="year1month1", adjusted="true"):
+        return f"{URL_BASE}function=TIME_SERIES_INTRADAY_EXTENDED&symbol={symbol}&interval={interval}&slice={slice}&adjusted={adjusted}&apikey={API_KEY}"
 
 def is_crypto(symbol):
     with open(CRYPTO_LIST) as f:
