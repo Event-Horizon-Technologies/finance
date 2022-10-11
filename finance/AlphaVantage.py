@@ -1,8 +1,4 @@
-from termios import TIOCGLCKTRMIOS
-from time import time
-
-from matplotlib import ticker
-import Utils
+from finance.Static import Static
 
 import pandas
 import requests
@@ -16,7 +12,7 @@ API_KEY = "ZZ7E9KFFYTKGZ0XR"
 CRYPTO_LIST = Path(__file__).parent.joinpath("crypto_list.txt")
 
 """finance AlphaVantageAPI wrapper class"""
-class AlphaVantage(Utils.Static):
+class AlphaVantage(Static):
     def __init__(self):
         super().__init__()
     
