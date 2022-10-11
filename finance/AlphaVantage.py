@@ -11,17 +11,30 @@ INTERVAL = "5min"
 API_KEY = "ZZ7E9KFFYTKGZ0XR"
 CRYPTO_LIST = Path(__file__).parent.joinpath("crypto_list.txt")
 
+"""
+Assuming we are going to store some data here eventually, otherwise we don't need the class.
+"""
 class AlphaVantage(Utils.Static):
     def __init__(self):
         super().__init__()
     
     @staticmethod
-    def get_intraday_url(symbol, interval, adjusted="true", outputsize="compact", datatype="csv"):
-        return f"{URL_BASE}function=TIME_SERIES_INTRADAY&symbol={symbol}&interval={interval}&outputsize={outputsize}&datatype={datatype}&apikey={API_KEY}"
+    def get_intraday_request(symbol, interval, adjusted="true", outputsize="compact", datatype="csv"):
+        return requests.get(
+            f"{URL_BASE}function=TIME_SERIES_INTRADAY&symbol={symbol}&interval={interval}&outputsize={outputsize}&datatype={datatype}&apikey={API_KEY}"
+        )
     
     @staticmethod
-    def get_intraday_extended_url(symbol, interval, slice="year1month1", adjusted="true"):
-        return f"{URL_BASE}function=TIME_SERIES_INTRADAY_EXTENDED&symbol={symbol}&interval={interval}&slice={slice}&adjusted={adjusted}&apikey={API_KEY}"
+    def get_intraday_extended_request(symbol, interval, slice="year1month1", adjusted="true"):
+        return requests.get(
+            f"{URL_BASE}function=TIME_SERIES_INTRADAY_EXTENDED&symbol={symbol}&interval={interval}&slice={slice}&adjusted={adjusted}&apikey={API_KEY}"
+        )
+
+    @staticmethod
+    def get_daily_request(symbol, outputsize="compact", datatype="csv"):
+        return requests.get(
+            f"{URL_BASE}function=TIME_SERIES_DAILY&symbol={symbol}&outputsize={outputsize}&datatype={datatype}"
+        )
 
 def is_crypto(symbol):
     with open(CRYPTO_LIST) as f:
