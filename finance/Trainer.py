@@ -37,7 +37,7 @@ class Trainer:
         self.target_test /= self.target_std
 
     @staticmethod
-    def __create_assets(symbols, timeframe="1d"):
+    def __create_assets(symbols, timeframe="1day"):
         return [Asset(symbol=symbol, timeframe=timeframe) for symbol in symbols]
 
     @staticmethod
@@ -61,7 +61,7 @@ class Trainer:
         # self.model.compile(optimizer=optimizers.SGD(), loss=losses.MeanSquaredError())
         self.model.compile(optimizer=optimizers.Adam(), loss=losses.MeanSquaredError())
 
-    def generate_data(self, saved_assets=None, symbols=None, timeframe="1d",
+    def generate_data(self, saved_assets=None, symbols=None, timeframe="1day",
                       indicators=None, prediction_offset=30, validation_split=0.1):
         if not (saved_assets or symbols):
             raise Exception("No assets to generate data with. Must provide either 'symbols' or 'saved_assets'")

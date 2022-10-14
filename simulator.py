@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
-from finance import Indicators, Simulator, Strategy, Asset, Utils
+from finance import Crypto, Indicators, Simulator, Strategy, Asset, Utils
 
 import numpy as np
 import sys
 
 def main(argv):
-    symbol    = argv[0] if len(argv) > 0 else "BTC-USD"
-    timeframe = argv[1] if len(argv) > 1 else "1d"
-
-    asset = Asset(symbol, timeframe=timeframe)
+    symbol    = argv[0] if len(argv) > 0 else "BTC"
+    timeframe = argv[1] if len(argv) > 1 else "1min"
+    asset = Crypto(symbol, timeframe)
 
     start = asset.close.start_date
     end = asset.close.end_date

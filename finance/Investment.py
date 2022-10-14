@@ -1,8 +1,13 @@
-from finance.Asset import Asset
+from finance.Crypto import Crypto
+from finance import Utils
 
 class Investment:
     def __init__(self, symbol, timeframe):
-        self.asset = Asset(symbol=symbol, timeframe=timeframe)
+        if Utils.is_crypto(symbol):
+            self.asset = Crypto(symbol=symbol, timeframe=timeframe)
+        else:
+            # TODO: Use Stock Class
+            pass
         self.quantity = 0.0
         self.fee = 0.00075
 

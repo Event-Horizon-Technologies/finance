@@ -3,16 +3,18 @@ from finance.Static import Static
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from pathlib import Path
 
 DATETIME_SYMBOL = 'm'
 DATETIME_TYPE = f"datetime64[{DATETIME_SYMBOL}]"
 PICKLE_GENERATION_MODE = '1'
+CRYPTO_LIST = Path(__file__).parent.joinpath("crypto_list.txt")
 
 INTERVALS = {
-    "1d": np.timedelta64(1, 'D'),
-    "1h": np.timedelta64(1, 'h'),
-    "5m": np.timedelta64(5, 'm'),
-    "1m": np.timedelta64(1, 'm')
+    "1day" : np.timedelta64(1, 'D'),
+    "60min": np.timedelta64(1, 'h'),
+    "5min" : np.timedelta64(5, 'm'),
+    "1min" : np.timedelta64(1, 'm')
 }
 
 MAX = {
@@ -63,7 +65,9 @@ def show_plot():
     plt.show()
 
 def create_np_datetime(timestamp):
-    return timestamp.to_datetime64().astype({DATETIME_TYPE})
+    if isinstance(timestamp, str):
+        return np.datetime64(timestamp).astype(DATETIME_TYPE)
+    return timestamp.to_datetime64().astype(DATETIME_TYPE)
 
 def create_pd_timestamp(datetime, tz_aware=True):
     return pd.Timestamp(datetime).tz_localize("UTC").tz_convert("UTC") if tz_aware else pd.Timestamp(datetime)
@@ -75,3 +79,10 @@ def write_to_file(file_name, data):
 def read_from_file(file_name):
     with open(file_name, 'r') as f:
         return f.read()
+
+def is_crypto(symbol):
+    with open(CRYPTO_LIST) as f:
+        for line in f.readlines():
+            if symbol == line.strip():
+                return True
+    return False

@@ -16,7 +16,7 @@ def get_symbols():
 
 def main(argv):
     symbol    = argv[0] if len(argv) > 0 else "BTC-USD"
-    timeframe = argv[1] if len(argv) > 1 else "1d"
+    timeframe = argv[1] if len(argv) > 1 else "1day"
 
     symbols = get_symbols()
     indicators = [Indicators.PSAR(), Indicators.EMA(2), Indicators.EMA(20), Indicators.EMA(40), Indicators.EMA(200)]

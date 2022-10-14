@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from warnings import warn
 
 class Simulator:
-    def __init__(self, strategy, start_date, end_date, timeframe="1d", cash=1.0):
+    def __init__(self, strategy, start_date, end_date, timeframe="1day", cash=1.0):
         self.now = start_date
         self.investments = {}
         self.indicator_data = {}
