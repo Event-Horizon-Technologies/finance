@@ -8,7 +8,7 @@ An attempt to disprove the [efficient market hypothesis](https://en.wikipedia.or
 * [Carhart four-factor model](https://en.wikipedia.org/wiki/Carhart_four-factor_model)
 * [Universal Portfolio](https://isl.stanford.edu/~cover/papers/paper93.pdf)
 * [Modern Portfolio Theory](https://en.wikipedia.org/wiki/Modern_portfolio_theory)
-* [Efficient Fronter](https://en.wikipedia.org/wiki/Efficient_frontier)
+* [Efficient Frontier](https://en.wikipedia.org/wiki/Efficient_frontier)
 * [Post-Modern Portfolio Theory](https://en.wikipedia.org/wiki/Post-modern_portfolio_theory)
 * [Markowitz Model](https://en.wikipedia.org/wiki/Markowitz_model)
 * [Black Litterman Model](https://en.wikipedia.org/wiki/Black%E2%80%93Litterman_model)
