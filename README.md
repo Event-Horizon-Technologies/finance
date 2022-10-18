@@ -24,5 +24,6 @@ Javascript
 FastAPI
 
 ## Database
+PostgreSQL
 
 ## Production environment
