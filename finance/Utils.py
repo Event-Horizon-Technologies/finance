@@ -1,3 +1,5 @@
+from finance.Static import Static
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -20,7 +22,7 @@ MAX = {
     "1m": "7d"
 }
 
-class Format:
+class Format(Static):
     BLUE = '\033[94m'
     GREEN = '\033[92m'
     YELLOW = '\033[93m'
@@ -30,8 +32,7 @@ class Format:
     UNDERLINE = '\033[4m'
 
     def __init__(self):
-        exception_string = f"Cannot instantiate static class: {self.__class__.__name__}"
-        raise Exception(exception_string)
+        super().__init__()
 
     @staticmethod
     def blue(string):
@@ -56,7 +57,6 @@ class Format:
     @staticmethod
     def underline(string):
         return f"{Format.UNDERLINE}{string}{Format.NONE}"
-
 
 def show_plot():
     plt.legend(loc="best", prop={"size": 10})
