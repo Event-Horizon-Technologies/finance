@@ -30,10 +30,7 @@ class Format(Static):
     NONE = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
-
-    def __init__(self):
-        super().__init__()
-
+    
     @staticmethod
     def blue(string):
         return f"{Format.BLUE}{string}{Format.NONE}"

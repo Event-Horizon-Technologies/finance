@@ -30,9 +30,6 @@ def get_pandas_dataframe(url, include_metadata=True):
 
 class AlphaVantage(Static):
     """finance AlphaVantageAPI wrapper class"""
-
-    def __init__(self):
-        super().__init__()
     
     """Core Stock API start"""
     @staticmethod
