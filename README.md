@@ -13,6 +13,7 @@ An attempt to disprove the [efficient market hypothesis](https://en.wikipedia.or
 * [Markowitz Model](https://en.wikipedia.org/wiki/Markowitz_model)
 * [Black Litterman Model](https://en.wikipedia.org/wiki/Black%E2%80%93Litterman_model)
 * [Black Scholes Model](https://en.wikipedia.org/wiki/Black%E2%80%93Scholes_model)
+### High Frequency Trading (HFT)
 * https://dm13450.github.io/2022/02/02/Order-Flow-Imbalance.html
 * https://arxiv.org/pdf/1011.6402.pdf
 * https://www.sciencedirect.com/science/article/abs/pii/S1386418115000415#:~:text=The%20Lee%20and%20Ready%20(1991,that%20occur%20at%20the%20midpoint.
