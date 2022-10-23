@@ -28,5 +28,3 @@ FastAPI
 
 ## Database
 PostgreSQL
-
-## Production environment
