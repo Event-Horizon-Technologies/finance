@@ -25,9 +25,9 @@ class CoinAPI(Static):
     @staticmethod
     def get_start_date(symbol):
         with open(SYMBOLS_PATH) as f:
-            return [
-                asset["data_start"] for asset in json.loads(f.read()) if asset["symbol_id"] == f"{EXCHANGE}_SPOT_{symbol}_USD"
-            ][0]
+            for asset in json.loads(f.read()):
+                if asset["symbol_id"] == f"{EXCHANGE}_SPOT_{symbol}_USD":
+                    return asset["data_start"]
 
     @staticmethod
     def get_ohlcv(symbol, timeframe, start_date, end_date=None, limit=None) -> str:
