@@ -1,3 +1,5 @@
+from datetime import timedelta
+from sqlite3 import Timestamp
 from finance import Utils
 
 import matplotlib.pyplot as plt
@@ -7,7 +9,7 @@ from scipy import stats
 
 class HistoricalData:
     def __init__(self, series=None, values=None, interval=None,
-                 start_date=None, end_date=None, label=None, scatter=None):
+                 start_date=None, end_date=None, label=None, scatter=None) -> None:
         self.values = values
         self.interval = interval
         self.start_date = start_date
@@ -44,7 +46,7 @@ class HistoricalData:
             self.scatter == other.scatter
         )
 
-    def __init_from_pandas_series(self, series):
+    def __init_from_pandas_series(self, series) -> None:
         dates = series.keys().to_numpy(Utils.DATETIME_TYPE)
         prices = series.values
 
@@ -62,7 +64,7 @@ class HistoricalData:
         size = round((self.end_date + self.interval - self.start_date) / self.interval)
         self.values = self.__create_array(dates, prices, self.interval, size)
 
-    def __init_from_numpy_array(self):
+    def __init_from_numpy_array(self) -> None:
         n = len(self.values)
         num_provided = sum([var is not None for var in (self.interval, self.start_date, self.end_date)])
 
@@ -76,16 +78,16 @@ class HistoricalData:
             elif self.end_date is None:
                 self.end_date = self.start_date + (n - 1) * self.interval
                 
-    def create_pd_timestamp(self, datetime):
+    def create_pd_timestamp(self, datetime) -> Timestamp:
         return Utils.create_pd_timestamp(datetime, tz_aware=(self.interval < np.timedelta64(1, 'D')))
 
     @staticmethod
-    def __find_time_delta(dates):
+    def __find_time_delta(dates) -> np.timedelta64:
         return stats.mode(dates[1:] - dates[:-1])
 
     @staticmethod
     @nb.njit(cache=True)
-    def __create_array(dates, prices, interval, size):
+    def __create_array(dates, prices, interval, size) -> np.ndarray:
         j = 0; values = np.empty(size)
 
         for i in range(len(prices) - 1):
@@ -96,18 +98,18 @@ class HistoricalData:
         values[-1] = prices[-1]
         return values
 
-    def in_bounds(self, date):
+    def in_bounds(self, date) -> bool:
         return self.start_date <= date <= self.end_date
 
-    def get_val_by_date(self, date):
+    def get_val_by_date(self, date) -> np.ndarray:
         if not self.in_bounds(date):
             raise Exception(f"Date {date} is out of bounds")
         return self.values[round((date - self.start_date) / self.interval)]
 
-    def __get_dates(self):
+    def __get_dates(self) -> np.ndarray:
         return np.arange(self.start_date, self.end_date + self.interval, self.interval)
 
-    def plot(self, label=None, show=True):
+    def plot(self, label=None, show=True) -> None:
         if label is None: label = self.label
         if self.scatter:
             plt.scatter(self.__get_dates(), self.values, label=label, s=2, c="orange")

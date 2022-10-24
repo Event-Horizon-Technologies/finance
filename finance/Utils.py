@@ -32,43 +32,43 @@ class Format(Static):
     UNDERLINE = '\033[4m'
     
     @staticmethod
-    def blue(string):
+    def blue(string) -> str:
         return f"{Format.BLUE}{string}{Format.NONE}"
 
     @staticmethod
-    def green(string):
+    def green(string) -> str:
         return f"{Format.GREEN}{string}{Format.NONE}"
 
     @staticmethod
-    def yellow(string):
+    def yellow(string) -> str:
         return f"{Format.YELLOW}{string}{Format.NONE}"
 
     @staticmethod
-    def red(string):
+    def red(string) -> str:
         return f"{Format.RED}{string}{Format.NONE}"
 
     @staticmethod
-    def bold(string):
+    def bold(string) -> str:
         return f"{Format.BOLD}{string}{Format.NONE}"
 
     @staticmethod
-    def underline(string):
+    def underline(string) -> str:
         return f"{Format.UNDERLINE}{string}{Format.NONE}"
 
-def show_plot():
+def show_plot() -> None:
     plt.legend(loc="best", prop={"size": 10})
     plt.show()
 
-def create_np_datetime(timestamp):
+def create_np_datetime(timestamp) -> np.datetime64:
     return timestamp.to_datetime64().astype({DATETIME_TYPE})
 
-def create_pd_timestamp(datetime, tz_aware=True):
+def create_pd_timestamp(datetime, tz_aware=True) -> pd.Timestamp:
     return pd.Timestamp(datetime).tz_localize("UTC").tz_convert("UTC") if tz_aware else pd.Timestamp(datetime)
 
-def write_to_file(file_name, data):
+def write_to_file(file_name, data) -> None:
     with open(file_name, 'w') as f:
         f.write(str(data))
 
-def read_from_file(file_name):
+def read_from_file(file_name) -> None:
     with open(file_name, 'r') as f:
         return f.read()
