@@ -82,7 +82,7 @@ class HistoricalData:
         return Utils.create_pd_timestamp(datetime, tz_aware=(self.interval < np.timedelta64(1, 'D')))
 
     @staticmethod
-    def __find_time_delta(dates) -> timedelta:
+    def __find_time_delta(dates) -> np.timedelta64:
         return stats.mode(dates[1:] - dates[:-1])
 
     @staticmethod
