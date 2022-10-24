@@ -14,7 +14,7 @@ SYMBOLS_PATH = Path(__file__).parent.joinpath("data/symbols.json")
 
 class CoinAPI(Static):
     @staticmethod
-    def convert_timeframe(timeframe):
+    def convert_timeframe(timeframe) -> str:
         match timeframe:
             case "1d": return "1DAY"
             case "1h": return "1HRS"
