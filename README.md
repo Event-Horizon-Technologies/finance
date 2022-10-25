@@ -25,4 +25,30 @@ Javascript
 FastAPI
 
 ## Database
-PostgreSQL
+### MySQL
+
+#### Install MySQL:
+
+    sudo apt install mysql-server
+
+Confirm it installed successfully and is active:
+
+    systemctl status mysql
+
+Connect to MySQL Server with the client:
+
+    sudo mysql -u root 
+
+#### Set a password for root:
+
+Log in as root:
+
+    sudo mysql -u root
+    
+Add a password for root, replacing `<password>` with your password:
+
+    ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '<password>'; 
+
+Log out of MySQL by executing `exit;` then restart the MySQL service:
+
+    sudo service mysql restart
