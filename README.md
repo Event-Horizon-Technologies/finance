@@ -27,7 +27,7 @@ FastAPI
 ## Database
 ### MySQL
 
-Install MySQL:
+#### Install MySQL:
 
     sudo apt install mysql-server
 
