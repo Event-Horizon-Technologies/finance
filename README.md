@@ -27,7 +27,7 @@ FastAPI
 ## Database
 ### MySQL
 
-Install mysql
+Install MySQL:
 ```
 sudo apt install mysql-server
 ```
@@ -37,12 +37,12 @@ Confirm it installed successfully and is active:
 systemctl status mysql
 ```
 
-Connect to MySQL Server with the client
+Connect to MySQL Server with the client:
 ```
 sudo mysql -u root 
 ```
 
-Set a password for root 
+Set a password for root:
 ```
 sudo mysql -u root
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'new-password';
