@@ -19,7 +19,9 @@ An attempt to disprove the [efficient market hypothesis](https://en.wikipedia.or
 * https://www.sciencedirect.com/science/article/abs/pii/S1386418115000415#:~:text=The%20Lee%20and%20Ready%20(1991,that%20occur%20at%20the%20midpoint.
 
 ## Front End
-Javascript
+### ReactJS
+
+
 
 ## Back End
 FastAPI
