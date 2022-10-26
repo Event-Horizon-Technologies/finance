@@ -31,6 +31,14 @@ Install nvm, with:
 Install the current stable LTS release of Node.js: 
 
     nvm install --lts
+    
+Install react scripts:
+
+    npm install react-scripts
+    
+Inside the root of the web app, start the web application with:
+
+    npm start
 
 ## Back End
 FastAPI
