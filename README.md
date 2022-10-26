@@ -43,6 +43,8 @@ Inside the root of the web app, start the web application with:
 ### React developer tools
 Add the react developer tools extension to your browser to add the 'Components' tab to the browser developer tools. This provides inspection of different components in a tree structure.
 
+:bulb: **Tip:** `Ctrl + Shift + I` opens up the developer tools on a webpage.
+
 ## Back End
 FastAPI
 
