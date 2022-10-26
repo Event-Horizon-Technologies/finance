@@ -28,7 +28,7 @@ Install nvm, with:
 
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
     
-Install the current stable LTS release of Node.js: 
+Install the current stable LTS release of Node.js along with npm: 
 
     nvm install --lts
     
