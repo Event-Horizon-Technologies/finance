@@ -20,8 +20,17 @@ An attempt to disprove the [efficient market hypothesis](https://en.wikipedia.or
 
 ## Front End
 ### ReactJS
+Install cURL with: 
 
+    sudo apt install curl
 
+Install nvm, with: 
+
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
+    
+Install the current stable LTS release of Node.js: 
+
+    nvm install --lts
 
 ## Back End
 FastAPI
