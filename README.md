@@ -31,7 +31,7 @@ Install nvm, with:
 Install the current stable LTS release of Node.js along with npm: 
 
     nvm install --lts
-    
+    everytime
 Install react scripts:
 
     npm install react-scripts
@@ -39,6 +39,9 @@ Install react scripts:
 Inside the root of the web app, start the web application with:
 
     npm start
+
+### React developer tools
+Add the react developer tools extension to your browser to add the 'Components' tab to the browser developer tools. This provides inspection of different components in a tree structure.
 
 ## Back End
 FastAPI
