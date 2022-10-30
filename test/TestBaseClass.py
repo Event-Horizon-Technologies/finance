@@ -1,9 +1,10 @@
-from finance import Utils
-
 import inspect
 import os
 import pickle
 from pathlib import Path
+
+from finance import Utils
+
 
 class TestBaseClass:
     IN_PICKLE_GENERATION_MODE = os.environ.get("MODE") == Utils.PICKLE_GENERATION_MODE
@@ -51,7 +52,7 @@ class TestBaseClass:
                 return pickle.load(f)
         except FileNotFoundError:
             return None
-        
+
     def store_pickle(self, name, var):
         self.pickle_jar_path.mkdir(parents=True, exist_ok=True)
         with open(self.get_pickle_path(name), "wb") as f:

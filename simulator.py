@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
-from finance import Indicators, Simulator, Strategy, Asset, Utils, Currency, Stock
-
-import numpy as np
 import sys
 
+import numpy as np
+
+from finance import (Asset, Currency, Indicators, Simulator, Stock, Strategy,
+                     Utils)
+
+
 def main(argv):
-    symbol    = argv[0] if len(argv) > 0 else "BTC-USD"
+    symbol = argv[0] if len(argv) > 0 else "BTC-USD"
     timeframe = argv[1] if len(argv) > 1 else "1d"
 
     asset = Asset(symbol, timeframe=timeframe)
@@ -15,7 +18,13 @@ def main(argv):
 
     cash = asset.get_price_by_date(start)
 
-    s = Simulator(strategy=Strategy.PSAR_EMA(symbol), start_date=start, end_date=end, timeframe=timeframe, cash=cash)
+    s = Simulator(
+        strategy=Strategy.PSAR_EMA(symbol),
+        start_date=start,
+        end_date=end,
+        timeframe=timeframe,
+        cash=cash,
+    )
     s.run()
     s.plot(plot_assets=True)
 

@@ -1,5 +1,6 @@
 from finance.Asset import Asset
 
+
 class Investment:
     def __init__(self, symbol, timeframe) -> None:
         self.asset = Asset(symbol=symbol, timeframe=timeframe)

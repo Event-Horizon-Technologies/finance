@@ -1,13 +1,23 @@
-from finance import Utils
-
 import matplotlib.pyplot as plt
 import numba as nb
 import numpy as np
 import pandas as pd
 from scipy import stats
 
+from finance import Utils
+
+
 class HistoricalData:
-    def __init__(self, values, dates=None, interval=None, start_date=None, end_date=None, label=None, scatter=None) -> None:
+    def __init__(
+        self,
+        values,
+        dates=None,
+        interval=None,
+        start_date=None,
+        end_date=None,
+        label=None,
+        scatter=None,
+    ) -> None:
         self.values = values
         self.interval = interval
         self.start_date = start_date
@@ -26,19 +36,21 @@ class HistoricalData:
         except (TypeError, ValueError):
             raise Exception("HistoricalData must be multiplied by a number")
 
-        return HistoricalData(values=self.values * num, start_date=self.start_date, end_date=self.end_date)
-    
+        return HistoricalData(
+            values=self.values * num, start_date=self.start_date, end_date=self.end_date
+        )
+
     def __eq__(self, other):
         if type(self) != type(other):
             raise TypeError(f"Cannot compare {type(self)} with {type(other)}")
 
         return (
-            np.array_equal(self.values, other.values) and
-            self.interval == other.interval and
-            self.start_date == other.start_date and
-            self.end_date == other.end_date and
-            self.label == other.label and
-            self.scatter == other.scatter
+            np.array_equal(self.values, other.values)
+            and self.interval == other.interval
+            and self.start_date == other.start_date
+            and self.end_date == other.end_date
+            and self.label == other.label
+            and self.scatter == other.scatter
         )
 
     def __init_from_dates(self, dates) -> None:
@@ -60,20 +72,30 @@ class HistoricalData:
 
     def __init_from_numpy_array(self) -> None:
         n = len(self.values)
-        num_provided = sum([var is not None for var in (self.interval, self.start_date, self.end_date)])
+        num_provided = sum(
+            [var is not None for var in (self.interval, self.start_date, self.end_date)]
+        )
 
         if num_provided < 2:
-            raise Exception("Must provide at least 2 of (interval, start_date, or end_date")
+            raise Exception(
+                "Must provide at least 2 of (interval, start_date, or end_date"
+            )
         elif num_provided == 2:
             if self.interval is None:
-                self.interval = (self.end_date - self.start_date) / (n - 1) if n > 1 else np.timedelta64(0)
+                self.interval = (
+                    (self.end_date - self.start_date) / (n - 1)
+                    if n > 1
+                    else np.timedelta64(0)
+                )
             elif self.start_date is None:
                 self.start_date = self.end_date - (n - 1) * self.interval
             elif self.end_date is None:
                 self.end_date = self.start_date + (n - 1) * self.interval
-                
+
     def create_pd_timestamp(self, datetime) -> pd.Timestamp:
-        return Utils.create_pd_timestamp(datetime, tz_aware=(self.interval < np.timedelta64(1, 'D')))
+        return Utils.create_pd_timestamp(
+            datetime, tz_aware=(self.interval < np.timedelta64(1, "D"))
+        )
 
     @staticmethod
     def __find_time_delta(dates) -> np.timedelta64:
@@ -82,11 +104,12 @@ class HistoricalData:
     @staticmethod
     @nb.njit(cache=True)
     def __create_array(dates, prices, interval, size) -> np.ndarray:
-        j = 0; values = np.empty(size)
+        j = 0
+        values = np.empty(size)
 
         for i in range(len(prices) - 1):
-            n = round((dates[i+1] - dates[i]) / interval)
-            values[j:j+n] = prices[i]
+            n = round((dates[i + 1] - dates[i]) / interval)
+            values[j : j + n] = prices[i]
             j += n
 
         values[-1] = prices[-1]
@@ -104,7 +127,8 @@ class HistoricalData:
         return np.arange(self.start_date, self.end_date + self.interval, self.interval)
 
     def plot(self, label=None, show=True) -> None:
-        if label is None: label = self.label
+        if label is None:
+            label = self.label
         if self.scatter:
             plt.scatter(self.__get_dates(), self.values, label=label, s=2, c="orange")
         else:

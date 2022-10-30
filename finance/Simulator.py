@@ -1,13 +1,17 @@
+from warnings import warn
 from xmlrpc.client import Boolean
-from finance.Asset import Asset
-from finance.Investment import Investment
-from finance import Utils
 
 import matplotlib.pyplot as plt
-from warnings import warn
+
+from finance import Utils
+from finance.Asset import Asset
+from finance.Investment import Investment
+
 
 class Simulator:
-    def __init__(self, strategy, start_date, end_date, timeframe="1d", cash=1.0) -> None:
+    def __init__(
+        self, strategy, start_date, end_date, timeframe="1d", cash=1.0
+    ) -> None:
         self.now = start_date
         self.investments = {}
         self.indicator_data = {}
@@ -27,20 +31,20 @@ class Simulator:
         if amount > self.cash:
             warn(f"Attempted to buy {amount} of {symbol} with only {self.cash} cash")
             return False
-            
+
         if symbol not in self.investments:
             self.__create_investment(symbol)
 
         self.investments[symbol].buy(self.now, amount)
         self.cash -= amount
-        
+
         return True
 
     def sell(self, symbol, amount) -> bool:
         if symbol not in self.investments:
             warn(f"Attempted to sell asset {symbol} which does not exist")
             return False
-            
+
         equity = self.investments[symbol].get_equity(self.now)
         if amount > equity:
             warn(f"Attempted to sell {amount} of {symbol} with only {equity} equity")
@@ -52,7 +56,9 @@ class Simulator:
         return True
 
     def get_equity(self) -> float:
-        return sum(investment.get_equity(self.now) for investment in self.investments.values())
+        return sum(
+            investment.get_equity(self.now) for investment in self.investments.values()
+        )
 
     def make_transactions(self, transactions) -> None:
         for symbol, amount in transactions.items():
@@ -62,7 +68,9 @@ class Simulator:
                 self.sell(symbol, -amount)
 
     def plot(self, plot_assets=False, plot_indicators=False) -> None:
-        plt.plot(self.strat_hist.keys(), self.strat_hist.values(), label=self.strategy.label)
+        plt.plot(
+            self.strat_hist.keys(), self.strat_hist.values(), label=self.strategy.label
+        )
 
         if plot_assets or plot_indicators:
             for symbol, investment in self.investments.items():
@@ -95,7 +103,9 @@ class Simulator:
             self.__create_investment(symbol)
             self.indicator_data[symbol] = {}
             for indicator in self.strategy.indicators:
-                historical_data = indicator.create_indicator(self.investments[symbol].asset)
+                historical_data = indicator.create_indicator(
+                    self.investments[symbol].asset
+                )
                 self.indicator_data[symbol][historical_data.label] = historical_data
 
     def __run(self) -> None:

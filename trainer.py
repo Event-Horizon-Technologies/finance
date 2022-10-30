@@ -1,25 +1,34 @@
 #!/usr/bin/env python3
-from finance import Asset, Indicators, Simulator, Strategy, Trainer, Utils
-
-import numpy as np
 import sys
 from pathlib import Path
+
+import numpy as np
+
+from finance import Asset, Indicators, Simulator, Strategy, Trainer, Utils
 
 DATA_PATH = Path(__file__).parent.joinpath("data")
 CRYPTOS_FILE = DATA_PATH.joinpath("top_30_cryptos.txt")
 TRAINER_PICKLE = DATA_PATH.joinpath("trainer.pickle")
 ASSETS_PICKLE = DATA_PATH.joinpath("assets.pickle")
 
+
 def get_symbols():
     with open(CRYPTOS_FILE) as f:
         return [symbol.strip() for symbol in f.readlines()]
 
+
 def main(argv):
-    symbol    = argv[0] if len(argv) > 0 else "BTC-USD"
+    symbol = argv[0] if len(argv) > 0 else "BTC-USD"
     timeframe = argv[1] if len(argv) > 1 else "1d"
 
     symbols = get_symbols()
-    indicators = [Indicators.PSAR(), Indicators.EMA(2), Indicators.EMA(20), Indicators.EMA(40), Indicators.EMA(200)]
+    indicators = [
+        Indicators.PSAR(),
+        Indicators.EMA(2),
+        Indicators.EMA(20),
+        Indicators.EMA(40),
+        Indicators.EMA(200),
+    ]
 
     # Trainer.create_pickled_assets(symbols, "1m", ASSETS_PICKLE)
 

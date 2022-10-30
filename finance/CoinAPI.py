@@ -1,10 +1,11 @@
-from finance.Static import Static
-from finance import Utils
-
 import json
+from pathlib import Path
+
 import numpy as np
 import requests
-from pathlib import Path
+
+from finance import Utils
+from finance.Static import Static
 
 API_KEY = "860A3E2F-665F-4C09-B37B-FEA28D5847DB"
 HEADERS = {"X-CoinAPI-Key": API_KEY}
@@ -12,14 +13,19 @@ URL_BASE = "https://rest.coinapi.io/v1"
 EXCHANGE = "COINBASE"
 SYMBOLS_PATH = Path(__file__).parent.joinpath("data/coinapi/symbols.json")
 
+
 class CoinAPI(Static):
     @staticmethod
     def convert_timeframe(timeframe) -> str:
         match timeframe:
-            case "1d": return "1DAY"
-            case "1h": return "1HRS"
-            case "5m": return "5MIN"
-            case "1m": return "1MIN"
+            case "1d":
+                return "1DAY"
+            case "1h":
+                return "1HRS"
+            case "5m":
+                return "5MIN"
+            case "1m":
+                return "1MIN"
         return timeframe
 
     @staticmethod

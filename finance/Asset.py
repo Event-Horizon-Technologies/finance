@@ -1,5 +1,6 @@
 from finance import Utils
 
+
 class Asset:
     def __new__(cls, symbol, **kwargs):
         if cls.__name__ == "Asset":
@@ -21,7 +22,8 @@ class Asset:
 
         self.start_date, self.end_date = self.close.start_date, self.close.end_date
 
-    def get_ohlcv(self) -> None: pass
+    def get_ohlcv(self) -> None:
+        pass
 
     def get_price_by_date(self, date) -> float:
         return self.close.get_val_by_date(date)
