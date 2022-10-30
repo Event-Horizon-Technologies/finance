@@ -10,7 +10,7 @@ API_KEY = "860A3E2F-665F-4C09-B37B-FEA28D5847DB"
 HEADERS = {"X-CoinAPI-Key": API_KEY}
 URL_BASE = "https://rest.coinapi.io/v1"
 EXCHANGE = "COINBASE"
-SYMBOLS_PATH = Path(__file__).parent.joinpath("data/symbols.json")
+SYMBOLS_PATH = Path(__file__).parent.joinpath("data/coinapi/symbols.json")
 
 class CoinAPI(Static):
     @staticmethod
