@@ -24,6 +24,7 @@ class CoinAPI(Static):
 
     @staticmethod
     def get_start_date(symbol):
+        symbol = symbol.replace("-USD", "")
         with open(SYMBOLS_PATH) as f:
             for asset in json.loads(f.read()):
                 if asset["symbol_id"] == f"{EXCHANGE}_SPOT_{symbol}_USD":
@@ -31,6 +32,7 @@ class CoinAPI(Static):
 
     @staticmethod
     def get_ohlcv(symbol, timeframe, start_date, end_date=None, limit=None) -> str:
+        symbol = symbol.replace("-USD", "")
         timeframe = CoinAPI.convert_timeframe(timeframe)
         if end_date:
             # We use an inclusive interval for dates but theirs is exclusive, need to add 1

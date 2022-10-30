@@ -1,8 +1,14 @@
 from finance import Utils
 
-from abc import ABC, abstractmethod
+class Asset:
+    def __new__(cls, symbol, **kwargs):
+        if cls.__name__ == "Asset":
+            cls_name = "Currency" if symbol.endswith("-USD") else "Stock"
+            for subclass in cls.__subclasses__():
+                if subclass.__name__ == cls_name:
+                    return object.__new__(subclass)
+        return object.__new__(cls)
 
-class Asset(ABC):
     def __init__(self, symbol, timeframe="1d", start_date=None, end_date=None) -> None:
         self.symbol = symbol
         self.timeframe = timeframe
@@ -15,7 +21,6 @@ class Asset(ABC):
 
         self.start_date, self.end_date = self.close.start_date, self.close.end_date
 
-    @abstractmethod
     def get_ohlcv(self) -> None: pass
 
     def get_price_by_date(self, date) -> float:

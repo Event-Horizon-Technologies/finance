@@ -69,6 +69,6 @@ def write_to_file(file_name, data) -> None:
     with open(file_name, 'w') as f:
         f.write(str(data))
 
-def read_from_file(file_name) -> None:
+def read_from_file(file_name) -> str:
     with open(file_name, 'r') as f:
         return f.read()
