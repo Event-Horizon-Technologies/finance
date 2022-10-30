@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from finance import Indicators, Simulator, Strategy, Asset, Utils
+from finance import Indicators, Simulator, Strategy, Asset, Utils, Currency, Stock
 
 import numpy as np
 import sys

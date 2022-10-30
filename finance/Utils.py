@@ -7,20 +7,20 @@ import pandas as pd
 DATETIME_SYMBOL = 'm'
 DATETIME_TYPE = f"datetime64[{DATETIME_SYMBOL}]"
 PICKLE_GENERATION_MODE = '1'
-
-INTERVALS = {
-    "1d": np.timedelta64(1, 'D'),
-    "1h": np.timedelta64(1, 'h'),
-    "5m": np.timedelta64(5, 'm'),
-    "1m": np.timedelta64(1, 'm')
-}
-
 MAX = {
     "1d": "max",
     "1h": "730d",
     "5m": "60d",
     "1m": "7d"
 }
+
+def convert_interval(timeframe):
+    match timeframe:
+        case "1d" | "1DAY": return np.timedelta64(1, 'D')
+        case "1h" | "1HRS": return np.timedelta64(1, 'h')
+        case "5m" | "5MIN": return np.timedelta64(5, 'm')
+        case "1m" | "1MIN": return np.timedelta64(1, 'm')
+    raise ValueError(f"Cannot create timedelta64 from {timeframe}")
 
 class Format(Static):
     BLUE = '\033[94m'
@@ -69,6 +69,6 @@ def write_to_file(file_name, data) -> None:
     with open(file_name, 'w') as f:
         f.write(str(data))
 
-def read_from_file(file_name) -> None:
+def read_from_file(file_name) -> str:
     with open(file_name, 'r') as f:
         return f.read()
