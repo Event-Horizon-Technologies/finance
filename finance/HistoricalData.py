@@ -1,5 +1,3 @@
-from datetime import timedelta
-from sqlite3 import Timestamp
 from finance import Utils
 
 import matplotlib.pyplot as plt
