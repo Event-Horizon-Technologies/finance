@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from finance import Indicators, Simulator, Strategy, Asset, Utils, Crypto
+from finance import Indicators, Simulator, Strategy, Asset, Utils, Currency
 
 import numpy as np
 import sys
@@ -8,7 +8,7 @@ def main(argv):
     symbol    = argv[0] if len(argv) > 0 else "BTC"
     timeframe = argv[1] if len(argv) > 1 else "1d"
 
-    asset = Crypto(symbol, timeframe=timeframe)
+    asset = Currency(symbol, timeframe=timeframe)
 
     # start = asset.close.start_date
     # end = asset.close.end_date

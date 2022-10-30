@@ -6,7 +6,7 @@ from finance import Utils
 import numpy as np
 import pandas as pd
 
-class Crypto(Asset):
+class Currency(Asset):
     def __init__(self, symbol, timeframe="1DAY", start_date=None, end_date=None, limit=100):
         self.limit = limit
 
