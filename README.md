@@ -46,7 +46,7 @@ Add the react developer tools extension to your browser to add the 'Components' 
 :bulb: **Tip:** `Ctrl + Shift + I` opens up the developer tools on a webpage.
 
 ## Back End
-FastAPI
+Still in research phase
 
 ## Database
 ### MySQL
