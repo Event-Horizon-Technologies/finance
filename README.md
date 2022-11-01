@@ -31,7 +31,7 @@ Install nvm, with:
 Install the current stable LTS release of Node.js along with npm: 
 
     nvm install --lts
-    everytime
+    
 Install react scripts:
 
     npm install react-scripts
