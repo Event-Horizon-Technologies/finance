@@ -76,3 +76,5 @@ Add a password for root, replacing `<password>` with your password:
 Log out of MySQL by executing `exit;` then restart the MySQL service:
 
     sudo service mysql restart
+
+## Account Management
