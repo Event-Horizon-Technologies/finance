@@ -1,6 +1,8 @@
 from finance import Utils
 
-class Asset:
+from abc import ABC, abstractmethod
+
+class Asset(ABC):
     def __new__(cls, symbol, **kwargs):
         if cls.__name__ == "Asset":
             cls_name = "Currency" if symbol.endswith("-USD") else "Stock"
@@ -21,6 +23,7 @@ class Asset:
 
         self.start_date, self.end_date = self.close.start_date, self.close.end_date
 
+    @abstractmethod
     def get_ohlcv(self) -> None: pass
 
     def get_price_by_date(self, date) -> float:
