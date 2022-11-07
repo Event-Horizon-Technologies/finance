@@ -1,16 +1,14 @@
-from xmlrpc.client import Boolean
-from finance.Asset import Asset
 from finance.Investment import Investment
 from finance import Utils
 
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 from warnings import warn
 
 class Simulator:
     def __init__(self, strategy, start_date, end_date, timeframe="1d", cash=1.0) -> None:
         self.now = start_date
         self.investments = {}
-        self.indicator_data = {}
         self.strat_hist = {}
         self.interval = Utils.convert_interval(timeframe)
         self.start_date = start_date
@@ -19,9 +17,16 @@ class Simulator:
         self.cash = cash
         self.initial_cash = cash
         self.strategy = strategy
+        
+        self.__create_investments()
+        strategy.attach_simulator(self)
 
     def __create_investment(self, symbol) -> None:
         self.investments[symbol] = Investment(symbol, self.timeframe)
+
+    def __create_investments(self):
+        for symbol in self.strategy.symbols:
+            self.__create_investment(symbol)
 
     def buy(self, symbol, amount) -> bool:
         if amount > self.cash:
@@ -61,20 +66,14 @@ class Simulator:
             else:
                 self.sell(symbol, -amount)
 
-    def plot(self, plot_assets=False, plot_indicators=False) -> None:
+    def plot(self, plot_assets=False) -> None:
         plt.plot(self.strat_hist.keys(), self.strat_hist.values(), label=self.strategy.label)
 
-        if plot_assets or plot_indicators:
+        if plot_assets:
             for symbol, investment in self.investments.items():
                 asset = investment.asset
-                shares = self.initial_cash / asset.get_price_by_date(self.start_date)
-
-                if plot_assets:
-                    asset.plot(shares=shares, show=False)
-
-                if plot_indicators:
-                    for label, data in self.indicator_data[symbol].items():
-                        (data * shares).plot(show=False, label=f"{symbol} {label}")
+                shares = self.initial_cash / asset.close[self.start_date]
+                asset.plot(shares=shares, show=False)
 
         Utils.show_plot()
 
@@ -87,21 +86,10 @@ class Simulator:
         return self.get_return() / list(self.investments.values())[0].asset.lump_sum()
 
     def run(self) -> None:
-        self.__create_strategy_data()
-        self.__run()
-
-    def __create_strategy_data(self) -> None:
-        for symbol in self.strategy.symbols:
-            self.__create_investment(symbol)
-            self.indicator_data[symbol] = {}
-            for indicator in self.strategy.indicators:
-                historical_data = indicator.create_indicator(self.investments[symbol].asset)
-                self.indicator_data[symbol][historical_data.label] = historical_data
-
-    def __run(self) -> None:
         self.now = self.start_date
-        while self.now <= self.end_date:
-            self.make_transactions(self.strategy.get_transactions(self))
+        n = round((self.end_date - self.start_date + self.interval) / self.interval)
+        for _ in tqdm(range(0, n), desc="Running Simulation.. "):
+            self.make_transactions(self.strategy.get_transactions())
             self.strat_hist[self.now] = self.get_equity() + self.cash
             self.now += self.interval
         self.now = self.end_date

@@ -8,11 +8,7 @@ class TestAsset(TestBaseClass):
     def __test_asset(self, symbol, timeframe, start_date_str, end_date_str):
         start_date = np.datetime64(start_date_str, Utils.DATETIME_SYMBOL)
         end_date = np.datetime64(end_date_str, Utils.DATETIME_SYMBOL)
-        history = self.get_pickle("history") if self.IN_TESTING_MODE else None
-        asset = Asset(symbol=symbol, history=history, timeframe=timeframe, start_date=start_date, end_date=end_date)
-
-        if self.IN_PICKLE_GENERATION_MODE:
-            self.store_pickle("history", asset.history)
+        asset = Asset(symbol=symbol, timeframe=timeframe, start_date=start_date, end_date=end_date)
 
         self.run(open=asset.open, close=asset.close, high=asset.high, low=asset.low)
 
