@@ -17,6 +17,8 @@ An attempt to disprove the [efficient market hypothesis](https://en.wikipedia.or
 * https://dm13450.github.io/2022/02/02/Order-Flow-Imbalance.html
 * https://arxiv.org/pdf/1011.6402.pdf
 * https://www.sciencedirect.com/science/article/abs/pii/S1386418115000415#:~:text=The%20Lee%20and%20Ready%20(1991,that%20occur%20at%20the%20midpoint.
+* RBF Kernels
+* Long Short Term Memory Neural Networks
 
 ## Front End
 ### ReactJS
