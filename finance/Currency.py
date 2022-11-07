@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 
 class Currency(Asset):
-    def __init__(self, symbol, timeframe="1DAY", start_date=None, end_date=None, limit=100):
+    def __init__(self, symbol, timeframe="1DAY", start_date=None, end_date=None, limit=10000):
         self.limit = limit
 
         if not start_date:

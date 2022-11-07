@@ -54,6 +54,10 @@ class Format(Static):
     @staticmethod
     def underline(string) -> str:
         return f"{Format.UNDERLINE}{string}{Format.NONE}"
+    
+class classproperty(property):
+    def __get__(self, cls, owner):
+        return classmethod(self.fget).__get__(None, owner)()
 
 def show_plot() -> None:
     plt.legend(loc="best", prop={"size": 10})

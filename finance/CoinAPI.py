@@ -6,13 +6,28 @@ import numpy as np
 import requests
 from pathlib import Path
 
-API_KEY = "860A3E2F-665F-4C09-B37B-FEA28D5847DB"
-HEADERS = {"X-CoinAPI-Key": API_KEY}
 URL_BASE = "https://rest.coinapi.io/v1"
 EXCHANGE = "COINBASE"
 SYMBOLS_PATH = Path(__file__).parent.joinpath("data/coinapi/symbols.json")
 
 class CoinAPI(Static):
+    API_KEYS = ["860A3E2F-665F-4C09-B37B-FEA28D5847DB", "37EEFEEB-2126-4664-818F-7DF11A44594F"]
+    API_KEY_IDX = 0
+
+    @Utils.classproperty
+    def HEADERS(cls) -> dict[str, str]:
+        return {"X-CoinAPI-Key": cls.API_KEYS[cls.API_KEY_IDX]}
+
+    @staticmethod
+    def make_request(url, attempt=0) -> str:
+        if attempt == len(CoinAPI.API_KEYS):
+            raise Exception("All out of API keys. Try again tomorrow.")
+        response = requests.get(url, headers=CoinAPI.HEADERS)
+        if response.status_code == 429:
+            CoinAPI.API_KEY_IDX = (CoinAPI.API_KEY_IDX + 1) % len(CoinAPI.API_KEYS)
+            return CoinAPI.make_request(url, attempt + 1)
+        return response.text
+
     @staticmethod
     def convert_timeframe(timeframe) -> str:
         match timeframe:
@@ -31,7 +46,7 @@ class CoinAPI(Static):
                     return asset["data_start"]
 
     @staticmethod
-    def get_ohlcv(symbol, timeframe, start_date, end_date=None, limit=None) -> str:
+    def get_ohlcv(symbol, timeframe, start_date, end_date=None, limit=100) -> str:
         symbol = symbol.replace("-USD", "")
         timeframe = CoinAPI.convert_timeframe(timeframe)
         if end_date:
@@ -44,12 +59,12 @@ class CoinAPI(Static):
         if limit:
             url += f"&limit={limit}"
 
-        return requests.get(url, headers=HEADERS).text
+        return CoinAPI.make_request(url)
 
     @staticmethod
     def get_assets() -> str:
-        return requests.get(f"{URL_BASE}/assets", headers=HEADERS).text
+        return CoinAPI.make_request(f"{URL_BASE}/assets")
 
     @staticmethod
     def get_symbols() -> str:
-        return requests.get(f"{URL_BASE}/symbols", headers=HEADERS).text
+        return CoinAPI.make_request(f"{URL_BASE}/symbols")
