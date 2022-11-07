@@ -1,8 +1,8 @@
-from finance.Asset import Asset
+from finance.create_asset import create_asset
 
 class Investment:
     def __init__(self, symbol, timeframe) -> None:
-        self.asset = Asset(symbol=symbol, timeframe=timeframe)
+        self.asset = create_asset(symbol=symbol, timeframe=timeframe)
         self.quantity = 0.0
         self.fee = 0.00075
 

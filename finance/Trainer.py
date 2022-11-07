@@ -1,4 +1,5 @@
 from finance.Asset import Asset
+from finance.create_asset import create_asset
 from finance import Utils
 
 import numpy as np
@@ -43,7 +44,7 @@ class Trainer:
         for symbol in (itr := tqdm(symbols)):
             itr.set_description(f"Downloading data for {symbol}.. ".ljust(40))
             try:
-                assets.append(Asset(symbol=symbol, timeframe=timeframe))
+                assets.append(create_asset(symbol=symbol, timeframe=timeframe))
             except ValueError: pass
         return assets
 

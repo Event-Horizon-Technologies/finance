@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from finance import Asset, Indicators, Simulator, Strategy, Trainer, Utils
+from finance import create_asset, Indicators, Simulator, Strategy, Trainer, Utils
 
 import numpy as np
 import sys
@@ -36,7 +36,7 @@ def main():
     symbol = "ADA-USD"
     timeframe = "1d"
 
-    asset = Asset(symbol, timeframe=timeframe)
+    asset = create_asset(symbol, timeframe=timeframe)
 
     start = asset.close.start_date
     end = asset.close.end_date
