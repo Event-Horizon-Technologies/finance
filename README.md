@@ -13,7 +13,7 @@ An attempt to disprove the [efficient market hypothesis](https://en.wikipedia.or
 * [Markowitz Model](https://en.wikipedia.org/wiki/Markowitz_model)
 * [Black Litterman Model](https://en.wikipedia.org/wiki/Black%E2%80%93Litterman_model)
 * [Black Scholes Model](https://en.wikipedia.org/wiki/Black%E2%80%93Scholes_model)
-* RBF Kernels
+* [RBF Kernels](https://en.wikipedia.org/wiki/Radial_basis_function_kernel)
 * Long Short Term Memory Neural Networks
 ### High Frequency Trading (HFT)
 * https://dm13450.github.io/2022/02/02/Order-Flow-Imbalance.html
