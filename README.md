@@ -14,7 +14,7 @@ An attempt to disprove the [efficient market hypothesis](https://en.wikipedia.or
 * [Black Litterman Model](https://en.wikipedia.org/wiki/Black%E2%80%93Litterman_model)
 * [Black Scholes Model](https://en.wikipedia.org/wiki/Black%E2%80%93Scholes_model)
 * [RBF Kernels](https://en.wikipedia.org/wiki/Radial_basis_function_kernel)
-* [Long Short Term Memory Neural Networks](https://en.wikipedia.org/wiki/Long_short-term_memory#:~:text=Long%20short%2Dterm%20memory%20(LSTM,networks%2C%20LSTM%20has%20feedback%20connections.)
+* [Long Short Term Memory Neural Networks](https://en.wikipedia.org/wiki/Long_short-term_memory)
 ### High Frequency Trading (HFT)
 * https://dm13450.github.io/2022/02/02/Order-Flow-Imbalance.html
 * https://arxiv.org/pdf/1011.6402.pdf
