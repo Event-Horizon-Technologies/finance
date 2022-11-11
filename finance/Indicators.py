@@ -1,3 +1,4 @@
+from finance import Utils
 from finance.HistoricalData import HistoricalData
 
 import math
@@ -17,10 +18,13 @@ class Indicator(ABC):
         return HistoricalData(values=self.get_values(asset), interval=asset.close.interval,
                               end_date=asset.close.end_date, label=self.label, scatter=self.scatter)
 
-    def create_neural_net_data(self, asset=None, prediction_offset=30) -> np.ndarray:
+    def create_neural_net_data(self, asset=None) -> np.ndarray:
         # The neural network will be trained to predict the price 'prediction_offset' timesteps in the future
         # Means we have to trim the end of array so the prediction won't go out of bounds
-        return np.log(self.get_values(asset) / asset.close.values)[:-prediction_offset]
+        values = self.get_values(asset)
+        if 0.0 in values:
+            raise Exception
+        return Utils.log_price_normalize(values, asset.close.values)
 
 class SMA(Indicator):
     def __init__(self, label=None, period=200) -> None:

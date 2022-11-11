@@ -41,6 +41,13 @@ class HistoricalData:
             self.scatter == other.scatter
         )
 
+    def __getitem__(self, item):
+        if isinstance(item, np.datetime64):
+            return self.get_val_by_date(item)
+        if isinstance(item, int):
+            return self.values[item]
+        raise TypeError(f"{type(self)} must be indexed by either a datetime64 or int")
+
     def __init_from_dates(self, dates) -> None:
         prices = self.values
 

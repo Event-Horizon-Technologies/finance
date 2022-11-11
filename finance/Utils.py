@@ -72,3 +72,17 @@ def write_to_file(file_name, data) -> None:
 def read_from_file(file_name) -> str:
     with open(file_name, 'r') as f:
         return f.read()
+
+def standardize(data, mean, std) -> np.ndarray:
+    return (data - mean) / std
+
+def unstandardize(data, mean, std) -> np.ndarray:
+    return std * data + mean
+
+def log_price_normalize(data, prices) -> np.ndarray:
+    # Prepares data that depends on the price of an asset for a neural network.
+    return np.log(data / prices)
+
+def log_price_unnormalize(data, prices) -> np.ndarray:
+    # Undoes 'log_price_normalize'
+    return prices * np.exp(data)

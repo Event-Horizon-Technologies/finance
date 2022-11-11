@@ -5,3 +5,5 @@ from .Investment import Investment
 from .Simulator import Simulator
 from .Stock import Stock
 from .Trainer import Trainer
+
+from .create_asset import create_asset
